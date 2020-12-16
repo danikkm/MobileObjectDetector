@@ -22,9 +22,10 @@ enum DetectionState {
 
 final class DetectionViewModel {
     let cameraType = BehaviorRelay<CameraType>(value: .backFacing)
-    let detectionState = BehaviorRelay<DetectionState>(value: .inactive)
+    let detectionState = PublishRelay<DetectionState>()
     
+    // TODO: Should be driver
     var detectionStateObservable: Observable<DetectionState> {
-        return detectionState.asObservable()
+        return detectionState.asObservable().observe(on: MainScheduler.asyncInstance)
     }
 }

@@ -12,7 +12,7 @@ import RxSwift
 
 class ViewController: UIViewController {
 
-    private var viewModel: DetectionViewModel!
+    var viewModel: DetectionViewModel!
     private var disposeBag = DisposeBag()
     var bufferSize: CGSize = .zero
     var rootLayer: CALayer! = nil
@@ -67,16 +67,6 @@ class ViewController: UIViewController {
                 self?.actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             }
         }.disposed(by: disposeBag)
-        
-        viewModel.detectionState.subscribe(onNext: { [weak self] state in
-            switch state {
-            case .active:
-                print("Active")
-            default:
-                print("In default")
-                break
-            }
-        }).disposed(by: disposeBag)
     }
     
     func setupAVCapture() {
@@ -175,7 +165,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("Frame dropped")
+//        print("Frame dropped")
 
     }
 }
