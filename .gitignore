@@ -1,0 +1,12 @@
+*xcuserstate
+*.xcbkptlist
+.DS_Store
+*.pbxuser
+xcuserdata
+Pods
+*.xccheckout
+*.gcno
+*.gcda
+*.xcscmblueprint
+.idea
+*.mlmodel
