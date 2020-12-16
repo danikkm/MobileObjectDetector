@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,10 @@
 		777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F75258A27EA0020F5C3 /* AppCoordinator.swift */; };
 		777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */; };
 		777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */; };
+		9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */; };
+		93304934258A83CC00AC3C91 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 93304933258A83CC00AC3C91 /* RxSwift */; };
+		93304936258A83CC00AC3C91 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 93304935258A83CC00AC3C91 /* RxRelay */; };
+		93304938258A83CC00AC3C91 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 93304937258A83CC00AC3C91 /* RxCocoa */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +34,7 @@
 		777D6F75258A27EA0020F5C3 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRecognitionViewController.swift; sourceTree = "<group>"; };
 		777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3FP16.mlmodel; sourceTree = "<group>"; };
+		9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93304938258A83CC00AC3C91 /* RxCocoa in Frameworks */,
+				93304936258A83CC00AC3C91 /* RxRelay in Frameworks */,
+				93304934258A83CC00AC3C91 /* RxSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +78,7 @@
 				777D6F6B258A26A20020F5C3 /* LaunchScreen.storyboard */,
 				777D6F69258A26A20020F5C3 /* Assets.xcassets */,
 				777D6F6E258A26A20020F5C3 /* Info.plist */,
+				9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */,
 			);
 			path = MobileObjectDetector;
 			sourceTree = "<group>";
@@ -100,6 +109,11 @@
 			dependencies = (
 			);
 			name = MobileObjectDetector;
+			packageProductDependencies = (
+				93304933258A83CC00AC3C91 /* RxSwift */,
+				93304935258A83CC00AC3C91 /* RxRelay */,
+				93304937258A83CC00AC3C91 /* RxCocoa */,
+			);
 			productName = MobileObjectDetector;
 			productReference = 777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +141,9 @@
 				Base,
 			);
 			mainGroup = 777D6F54258A26A00020F5C3;
+			packageReferences = (
+				93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = 777D6F5E258A26A00020F5C3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -157,6 +174,7 @@
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
 				777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */,
 				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
+				9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */,
 				777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */,
 				777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */,
 				777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */,
@@ -236,7 +254,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -291,7 +309,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -361,6 +379,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = "6.0.0-rc.2";
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		93304933258A83CC00AC3C91 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		93304935258A83CC00AC3C91 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		93304937258A83CC00AC3C91 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 777D6F55258A26A00020F5C3 /* Project object */;
 }

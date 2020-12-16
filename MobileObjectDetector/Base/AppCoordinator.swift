@@ -15,7 +15,7 @@ class AppCoordinator {
     }
     
     func start() {
-        let viewController = ObjectRecognitionViewController.instantiate()
+        let viewController = ObjectRecognitionViewController.instantiate(viewModel: DetectionViewModel())
         let navigationController = UINavigationController(rootViewController: viewController)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

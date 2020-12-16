@@ -8,12 +8,22 @@
 import Foundation
 import AVFoundation
 import Vision
+import RxSwift
+
 
 class ObjectRecognitionViewController: ViewController {
     private var detectionOverlay: CALayer! = nil
     
+    
+    private var viewModel: DetectionViewModel!
+    private var disposeBag = DisposeBag()
+    
     // Vision parts
     private var requests = [VNRequest]()
+    
+//    private func setupBindings() {
+//        
+//    }
     
     @discardableResult
     func setupVision() -> NSError? {
@@ -34,7 +44,8 @@ class ObjectRecognitionViewController: ViewController {
                 })
             })
             self.requests = [objectRecognition]
-        } catch let error as NSError {
+        }
+        catch let error as NSError {
             print("Model loading went wrong: \(error)")
         }
         
@@ -80,18 +91,17 @@ class ObjectRecognitionViewController: ViewController {
         }
     }
     
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = .green
-//    }
     
     override func setupAVCapture() {
         super.setupAVCapture()
         print("In super")
+        
         // setup Vision parts
         setupLayers()
         updateLayerGeometry()
-        setupVision()
+        
+        // This one start the detectiong
+//        setupVision()
         
         // start the capture
         startCaptureSession()
@@ -134,16 +144,7 @@ class ObjectRecognitionViewController: ViewController {
     func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
         let textLayer = CATextLayer()
         textLayer.name = "Object Label"
-//        let formattedString = NSMutableAttributedString(string: String(format: "\(identifier): %.2f", confidence * 100))
-//        let largeFont = UIFont(name: "Helvetica", size: 24.0)!
-//        let myAttributes = [
-//            NSAttributedString.Key.font: largeFont,
-//            NSAttributedString.Key.foregroundColor: UIColor.white                    // text color
-//        ]
-//
-//
-//        formattedString.addAttributes(myAttributes, range: NSRange(location: 0, length: identifier.count + 8))
-//
+        
         let confidenceFormatted = String(format: ": %.2f", confidence * 100)
         textLayer.fontSize = 21
         textLayer.string = "\(identifier)\(confidenceFormatted)"

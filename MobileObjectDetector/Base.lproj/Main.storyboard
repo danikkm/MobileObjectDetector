@@ -15,16 +15,33 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" userLabel="Preview View">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsQ-wi-k9r">
+                                <rect key="frame" x="96" y="722" width="222" height="68"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="68" id="FWW-CO-0bL"/>
+                                    <constraint firstAttribute="width" constant="222" id="cgk-M8-Nd7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BsQ-wi-k9r" secondAttribute="bottom" constant="72" id="rCo-HD-1X6"/>
+                            <constraint firstItem="BsQ-wi-k9r" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="96" id="tQN-WM-kN3"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="actionButton" destination="BsQ-wi-k9r" id="LOi-Pu-XQz"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="3SC-hN-o6K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="14" y="121"/>
+            <point key="canvasLocation" x="13.043478260869566" y="120.53571428571428"/>
         </scene>
     </scenes>
     <resources>

@@ -8,13 +8,27 @@
 import UIKit
 import AVFoundation
 import Vision
+import RxSwift
 
 class ViewController: UIViewController {
 
+    private var viewModel: DetectionViewModel!
+    private var disposeBag = DisposeBag()
     var bufferSize: CGSize = .zero
     var rootLayer: CALayer! = nil
     
     @IBOutlet weak private var previewView: UIView!
+    @IBOutlet weak private var actionButton: UIButton! {
+        didSet {
+            // TODO: refactor this
+            actionButton.setTitle("Start Detecting", for: .normal)
+            actionButton.layer.cornerRadius = 32
+            actionButton.clipsToBounds = true
+            actionButton.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)
+            actionButton.setTitleColor(.black, for: .normal)
+            actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        }
+    }
     
     private let session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
@@ -22,10 +36,47 @@ class ViewController: UIViewController {
     
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
     
+    static func instantiate(viewModel: DetectionViewModel) -> ViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let viewController = storyboard.instantiateInitialViewController() as! ViewController
+        viewController.viewModel = viewModel
+        return viewController
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = true
+        setupAdditionalUIElements()
         setupAVCapture()
+        setupBindings()
+    }
+    
+    func setupAdditionalUIElements() {
+        //
+    }
+    
+    func setupBindings() {
+        actionButton.rx.tap.bind { [weak self] value in
+            if self?.actionButton.titleLabel?.text  == "Start Detecting" {
+                self?.viewModel.detectionState.accept(.active)
+                self?.actionButton.setTitle("Stop Detecting", for: .normal)
+                self?.actionButton.backgroundColor = #colorLiteral(red: 0.9176368713, green: 0.5647383332, blue: 0.5528833866, alpha: 1)
+            } else {
+                self?.viewModel.detectionState.accept(.inactive)
+                self?.actionButton.setTitle("Start Detecting", for: .normal)
+                self?.actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            }
+        }.disposed(by: disposeBag)
+        
+        viewModel.detectionState.subscribe(onNext: { [weak self] state in
+            switch state {
+            case .active:
+                print("Active")
+            default:
+                print("In default")
+                break
+            }
+        }).disposed(by: disposeBag)
     }
     
     func setupAVCapture() {
@@ -33,6 +84,7 @@ class ViewController: UIViewController {
         
         // Select a video device, make an input
         let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
+        
         do {
             deviceInput = try AVCaptureDeviceInput(device: videoDevice!)
         } catch {
@@ -80,9 +132,11 @@ class ViewController: UIViewController {
         rootLayer = previewView.layer
         previewLayer.frame = rootLayer.bounds
         rootLayer.addSublayer(previewLayer)
+        rootLayer.insertSublayer(previewLayer, below: actionButton.layer)
     }
 }
 
+//MARK: - Setup
 extension ViewController {
     func startCaptureSession() {
         session.startRunning()
@@ -114,13 +168,6 @@ extension ViewController {
     }
 }
 
-extension ViewController {
-    static func instantiate() -> ViewController {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let viewController = storyboard.instantiateInitialViewController() as! ViewController
-        return viewController
-    }
-}
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
