@@ -9,9 +9,10 @@ import UIKit
 import AVFoundation
 import Vision
 import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController {
-
+    
     var viewModel: DetectionViewModel!
     private var disposeBag = DisposeBag()
     var bufferSize: CGSize = .zero
@@ -56,17 +57,26 @@ class ViewController: UIViewController {
     }
     
     func setupBindings() {
-        actionButton.rx.tap.bind { [weak self] value in
-            if self?.actionButton.titleLabel?.text  == "Start Detecting" {
-                self?.viewModel.detectionState.accept(.active)
-                self?.actionButton.setTitle("Stop Detecting", for: .normal)
-                self?.actionButton.backgroundColor = #colorLiteral(red: 0.9176368713, green: 0.5647383332, blue: 0.5528833866, alpha: 1)
-            } else {
-                self?.viewModel.detectionState.accept(.inactive)
-                self?.actionButton.setTitle("Start Detecting", for: .normal)
-                self?.actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-            }
-        }.disposed(by: disposeBag)
+        actionButton.rx.tap
+            .bind { _ in
+                self.actionButton.isSelected.toggle()
+                
+                let isSelected = self.actionButton.isSelected
+                
+                if isSelected {
+                    self.actionButton.tintColor = .clear
+                    self.actionButton.setTitleColor(.black, for: .selected)
+                    self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
+                    self.actionButton.backgroundColor = UIColor.Button.stop
+                    
+                    self.viewModel.detectionState.accept(.active)
+                } else {
+                    self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
+                    self.actionButton.backgroundColor = UIColor.Button.start
+                    self.viewModel.detectionState.accept(.inactive)
+                }
+                
+            }.disposed(by: disposeBag)
     }
     
     func setupAVCapture() {
@@ -137,7 +147,7 @@ extension ViewController {
         previewLayer.removeFromSuperlayer()
         previewLayer = nil
     }
-        
+    
     public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
         let curDeviceOrientation = UIDevice.current.orientation
         let exifOrientation: CGImagePropertyOrientation
@@ -165,8 +175,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-//        print("Frame dropped")
-
+        //        print("Frame dropped")
+        
     }
 }
-

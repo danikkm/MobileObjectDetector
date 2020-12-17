@@ -13,9 +13,6 @@ import RxSwift
 
 class ObjectRecognitionViewController: ViewController {
     private var detectionOverlay: CALayer! = nil
-    
-    
-    //    private var viewModel: DetectionViewModel!
     private var disposeBag = DisposeBag()
     
     // Vision parts
@@ -39,9 +36,9 @@ class ObjectRecognitionViewController: ViewController {
     }
     
     func testBindings() {
-        viewModel.detectionStateObservable
+        viewModel.detectionStateDriver
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] state in
+            .drive(onNext: { [weak self] state in
                 switch state {
                 case .active:
                     self?.setupLayers()
@@ -126,7 +123,7 @@ class ObjectRecognitionViewController: ViewController {
         let error: NSError! = nil
         
         guard let modelURL = Bundle.main.url(forResource: "YOLOv3FP16", withExtension: "mlmodelc") else {
-            return NSError(domain: "VisionObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
+            return NSError(domain: "ObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
         }
         do {
             let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: modelURL))

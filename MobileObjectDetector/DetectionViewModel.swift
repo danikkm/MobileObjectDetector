@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Vision
 
 enum CameraType {
     case frontFacing
@@ -17,15 +18,16 @@ enum CameraType {
 enum DetectionState {
     case inactive
     case active
-    case error
 }
 
 final class DetectionViewModel {
     let cameraType = BehaviorRelay<CameraType>(value: .backFacing)
     let detectionState = PublishRelay<DetectionState>()
     
-    // TODO: Should be driver
-    var detectionStateObservable: Observable<DetectionState> {
-        return detectionState.asObservable().observe(on: MainScheduler.asyncInstance)
+    let coreMLModel = PublishSubject<VNCoreMLModel>()
+    
+    
+    var detectionStateDriver: Driver<DetectionState> {
+        return detectionState.asDriver(onErrorJustReturn: .inactive)
     }
 }
