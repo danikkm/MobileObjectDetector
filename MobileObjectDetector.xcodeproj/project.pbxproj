@@ -16,13 +16,14 @@
 		777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F75258A27EA0020F5C3 /* AppCoordinator.swift */; };
 		777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */; };
 		777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */; };
-		9324E982258BDE68007475FE /* UIColor+Palette.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9324E981258BDE68007475FE /* UIColor+Palette.swift.swift */; };
+		9324E982258BDE68007475FE /* Color+Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9324E981258BDE68007475FE /* Color+Palette.swift */; };
 		9325DD8D258D3C4B00494E5B /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9325DD8C258D3C4B00494E5B /* RxSwift */; };
 		9325DD8F258D3C4B00494E5B /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 9325DD8E258D3C4B00494E5B /* RxRelay */; };
 		9325DD91258D3C4B00494E5B /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 9325DD90258D3C4B00494E5B /* RxCocoa */; };
 		9325DD97258D3CC500494E5B /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = 9325DD96258D3CC500494E5B /* RxGesture */; };
 		9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */; };
 		937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */; };
+		937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 937B7F7E258E48B2001979EF /* QuickTableViewController */; };
 		93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +39,7 @@
 		777D6F75258A27EA0020F5C3 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRecognitionViewController.swift; sourceTree = "<group>"; };
 		777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3FP16.mlmodel; sourceTree = "<group>"; };
-		9324E981258BDE68007475FE /* UIColor+Palette.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Palette.swift.swift"; sourceTree = "<group>"; };
+		9324E981258BDE68007475FE /* Color+Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Palette.swift"; sourceTree = "<group>"; };
 		9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModelProtocol.swift; sourceTree = "<group>"; };
 		93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 				9325DD8F258D3C4B00494E5B /* RxRelay in Frameworks */,
 				9325DD97258D3CC500494E5B /* RxGesture in Frameworks */,
 				9325DD8D258D3C4B00494E5B /* RxSwift in Frameworks */,
+				937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,7 +107,7 @@
 		9324E980258BDE5C007475FE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				9324E981258BDE68007475FE /* UIColor+Palette.swift.swift */,
+				9324E981258BDE68007475FE /* Color+Palette.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -160,6 +162,7 @@
 				9325DD8E258D3C4B00494E5B /* RxRelay */,
 				9325DD90258D3C4B00494E5B /* RxCocoa */,
 				9325DD96258D3CC500494E5B /* RxGesture */,
+				937B7F7E258E48B2001979EF /* QuickTableViewController */,
 			);
 			productName = MobileObjectDetector;
 			productReference = 777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */;
@@ -191,6 +194,7 @@
 			packageReferences = (
 				9325DD8B258D3C4B00494E5B /* XCRemoteSwiftPackageReference "RxSwift" */,
 				9325DD95258D3CC500494E5B /* XCRemoteSwiftPackageReference "RxGesture" */,
+				937B7F7D258E48B2001979EF /* XCRemoteSwiftPackageReference "QuickTableViewController" */,
 			);
 			productRefGroup = 777D6F5E258A26A00020F5C3 /* Products */;
 			projectDirPath = "";
@@ -219,7 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9324E982258BDE68007475FE /* UIColor+Palette.swift.swift in Sources */,
+				9324E982258BDE68007475FE /* Color+Palette.swift in Sources */,
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
 				937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */,
 				777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */,
@@ -471,6 +475,14 @@
 				minimumVersion = 6.0.0;
 			};
 		};
+		937B7F7D258E48B2001979EF /* XCRemoteSwiftPackageReference "QuickTableViewController" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bcylin/QuickTableViewController.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -508,6 +520,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9325DD95258D3CC500494E5B /* XCRemoteSwiftPackageReference "RxGesture" */;
 			productName = RxGesture;
+		};
+		937B7F7E258E48B2001979EF /* QuickTableViewController */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 937B7F7D258E48B2001979EF /* XCRemoteSwiftPackageReference "QuickTableViewController" */;
+			productName = QuickTableViewController;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

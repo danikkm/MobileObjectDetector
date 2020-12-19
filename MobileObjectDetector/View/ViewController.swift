@@ -27,7 +27,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             actionButton.clipsToBounds = true
             actionButton.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)
             actionButton.setTitleColor(.black, for: .normal)
-            actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            actionButton.backgroundColor = UIColor.Button.start
         }
     }
     @IBOutlet weak private var settingsMenuButton: UIButton!
@@ -43,7 +43,6 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        modalPresentationCapturesStatusBarAppearance = true
         
         viewModel.configure(delegate: self)
         
@@ -51,6 +50,16 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         
         setupAVCapture()
         setupBindings()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     private func setupAdditionalUIElements() {
@@ -89,11 +98,13 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         settingsMenuButton.rx.tap
             .bind { [unowned self] _ in
                 let settingsVC = SettingsViewController()
-                present(settingsVC, animated: true, completion: nil)
+                self.navigationController?.pushViewController(settingsVC, animated: true)
+//                present(settingsVC, animated: true, completion: nil)
                 
+                // TODO: stop detection if present
                 self.viewModel.stopCaptureSession()
                 
-                settingsVC.rx.deallocated.bind { _ in
+                settingsVC.rx.deallocating.bind { _ in
                     self.viewModel.startCaptureSession()
                     
                 }.disposed(by: self.disposeBag)
