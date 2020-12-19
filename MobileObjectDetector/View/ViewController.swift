@@ -16,8 +16,8 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     var viewModel: DetectionViewModelProtocol!
     var rootLayer: CALayer! = nil
     
-    private var disposeBag = DisposeBag()
-    
+    private var previewLayer: AVCaptureVideoPreviewLayer! = nil
+    private var blurView: UIView!
     @IBOutlet weak private var previewView: UIView!
     @IBOutlet weak private var actionButton: UIButton! {
         didSet {
@@ -30,11 +30,10 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         }
     }
-    
     @IBOutlet weak private var settingsMenuButton: UIButton!
     
-    private var previewLayer: AVCaptureVideoPreviewLayer! = nil
-
+    private var disposeBag = DisposeBag()
+    
     static func instantiate(viewModel: DetectionViewModelProtocol) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
@@ -44,13 +43,26 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        modalPresentationCapturesStatusBarAppearance = true
+        
         viewModel.configure(delegate: self)
-        navigationController?.navigationBar.isHidden = true
-
+        
+        setupAdditionalUIElements()
+        
         setupAVCapture()
         setupBindings()
     }
     
+    private func setupAdditionalUIElements() {
+        navigationController?.navigationBar.isHidden = true
+        view.backgroundColor = .black
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemChromeMaterialDark)
+        blurView = UIVisualEffectView(effect: blurEffect)
+        
+        blurView.frame = view.bounds
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
     
     func setupBindings() {
         actionButton.rx.tap
@@ -65,11 +77,11 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                     self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.stop
                     
-                    self.viewModel.detectionState.accept(.active)
+                    self.viewModel.detectionStateRelay.accept(.active)
                 } else {
                     self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.start
-                    self.viewModel.detectionState.accept(.inactive)
+                    self.viewModel.detectionStateRelay.accept(.inactive)
                 }
                 
             }.disposed(by: disposeBag)
@@ -78,7 +90,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             .bind { [unowned self] _ in
                 let settingsVC = SettingsViewController()
                 present(settingsVC, animated: true, completion: nil)
-
+                
                 self.viewModel.stopCaptureSession()
                 
                 settingsVC.rx.deallocated.bind { _ in
@@ -100,14 +112,17 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         
         previewLayer = AVCaptureVideoPreviewLayer(session: viewModel.session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        previewLayer.insertSublayer(blurView.layer, below: rootLayer)
+        
         rootLayer = previewView.layer
         previewLayer.frame = rootLayer.bounds
         rootLayer.addSublayer(previewLayer)
+        
         rootLayer.insertSublayer(previewLayer, below: actionButton.layer)
     }
 }
 
-//MARK: - Setup
+//MARK: - Device orientation setup
 extension ViewController {
     // TODO: Allow multi orientation
     public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
@@ -130,13 +145,13 @@ extension ViewController {
     }
 }
 
-
+//MARK: - AVCaptureDelegate
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // in subclass
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-            print("Frame dropped")
+        print("Frame dropped")
     }
 }

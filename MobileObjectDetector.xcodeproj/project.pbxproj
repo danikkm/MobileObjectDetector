@@ -80,6 +80,7 @@
 			children = (
 				777D6F78258A2C760020F5C3 /* Base */,
 				9324E980258BDE5C007475FE /* Extensions */,
+				937B7F78258E30DE001979EF /* Enums */,
 				93F5F656258D2BF000A4B172 /* ViewModel */,
 				93F5F655258D2BEB00A4B172 /* View */,
 				777D6F66258A26A00020F5C3 /* Main.storyboard */,
@@ -107,6 +108,13 @@
 				9324E981258BDE68007475FE /* UIColor+Palette.swift.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		937B7F78258E30DE001979EF /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Enums;
 			sourceTree = "<group>";
 		};
 		93F5F655258D2BEB00A4B172 /* View */ = {

@@ -10,7 +10,7 @@ import RxCocoa
 import AVFoundation
 
 protocol DetectionViewModelProtocol {
-    var detectionState: PublishRelay<DetectionState> { get }
+    var detectionStateRelay: PublishRelay<DetectionState> { get }
     var session: AVCaptureSession { get }
     var bufferSize: CGSize { get }
     var detectionStateDriver: Driver<DetectionState> { get }

@@ -27,7 +27,7 @@ final class DetectionViewModel: DetectionViewModelProtocol {
     private weak var delegate: DetectionViewModelEvents?
     
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
-    private (set) var detectionState = PublishRelay<DetectionState>()
+    private (set) var detectionStateRelay = PublishRelay<DetectionState>()
     private let coreMLModel = PublishSubject<VNCoreMLModel>()
     
     private (set) var session = AVCaptureSession()
@@ -43,7 +43,7 @@ final class DetectionViewModel: DetectionViewModelProtocol {
     }
     
     var detectionStateDriver: Driver<DetectionState> {
-        return detectionState.asDriver(onErrorJustReturn: .inactive)
+        return detectionStateRelay.asDriver(onErrorJustReturn: .inactive)
     }
     
     var cameraTypeObservable: Observable<CameraType> {
