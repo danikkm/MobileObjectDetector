@@ -13,8 +13,7 @@ import RxCocoa
 import RxGesture
 
 class ViewController: UIViewController, DetectionViewModelEvents {
-
-    var viewModel: DetectionViewModel!
+    var viewModel: DetectionViewModelProtocol!
     var rootLayer: CALayer! = nil
     
     private var disposeBag = DisposeBag()
@@ -31,11 +30,12 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         }
     }
+    
     @IBOutlet weak private var settingsMenuButton: UIButton!
     
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
 
-    static func instantiate(viewModel: DetectionViewModel) -> ViewController {
+    static func instantiate(viewModel: DetectionViewModelProtocol) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
         viewController.viewModel = viewModel
@@ -109,12 +109,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
 
 //MARK: - Setup
 extension ViewController {
-    // Clean up capture setup
-    func teardownAVCapture() {
-        previewLayer.removeFromSuperlayer()
-        previewLayer = nil
-    }
-    
+    // TODO: Allow multi orientation
     public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
         let curDeviceOrientation = UIDevice.current.orientation
         let exifOrientation: CGImagePropertyOrientation
@@ -143,6 +138,5 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
             print("Frame dropped")
-        
     }
 }

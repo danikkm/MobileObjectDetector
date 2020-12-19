@@ -21,29 +21,26 @@ enum DetectionState {
     case active
 }
 
-protocol DetectionViewModelEvents: class {
-}
+protocol DetectionViewModelEvents: class {}
 
-final class DetectionViewModel {
-    weak var delegate: DetectionViewModelEvents?
+final class DetectionViewModel: DetectionViewModelProtocol {
+    private weak var delegate: DetectionViewModelEvents?
     
-    let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
+    private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
+    private (set) var detectionState = PublishRelay<DetectionState>()
+    private let coreMLModel = PublishSubject<VNCoreMLModel>()
+    
+    private (set) var session = AVCaptureSession()
+    private (set) var bufferSize: CGSize = .zero
+    private var deviceInput: AVCaptureDeviceInput!
+    private let capturePreset: AVCaptureSession.Preset?
+    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
+   
     
     var cameraType: CameraType {
         return cameraTypeRelay.value
     }
-    
-    let detectionState = PublishRelay<DetectionState>()
-    
-    var deviceInput: AVCaptureDeviceInput!
-    let session = AVCaptureSession()
-    let capturePreset: AVCaptureSession.Preset?
-    let videoDataOutput = AVCaptureVideoDataOutput()
-    let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
-    var bufferSize: CGSize = .zero
-    
-    let coreMLModel = PublishSubject<VNCoreMLModel>()
-    
     
     var detectionStateDriver: Driver<DetectionState> {
         return detectionState.asDriver(onErrorJustReturn: .inactive)
@@ -54,7 +51,6 @@ final class DetectionViewModel {
     }
     
     init() {
-        // TODO: put it in the init
         self.capturePreset = .hd1280x720
     }
     
@@ -63,9 +59,9 @@ final class DetectionViewModel {
     }
 }
 
+// MARK: - Public methods
 extension DetectionViewModel {
     func prepareAVCapture() {
-        // Select a video device, make an input
         let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
         
         do {
@@ -78,12 +74,12 @@ extension DetectionViewModel {
         session.beginConfiguration()
         session.sessionPreset = capturePreset ?? .hd1280x720 // Model image size is smaller.
         
-        // Add a video input
         guard session.canAddInput(self.deviceInput) else {
             print("Could not add video device input to the session")
             session.commitConfiguration()
             return
         }
+        
         session.addInput(deviceInput)
         if session.canAddOutput(videoDataOutput) {
             session.addOutput(videoDataOutput)
@@ -96,7 +92,9 @@ extension DetectionViewModel {
             session.commitConfiguration()
             return
         }
+        
         let captureConnection = videoDataOutput.connection(with: .video)
+        
         // Always process the frames
         captureConnection?.isEnabled = true
         do {
@@ -109,10 +107,42 @@ extension DetectionViewModel {
         } catch {
             print(error)
         }
+        
         session.commitConfiguration()
     }
     
-    func addVideoInput(position: AVCaptureDevice.Position) {
+    func switchCamera() {
+        switch cameraType{
+        case .frontFacing:
+            cameraTypeRelay.accept(.backFacing)
+            addVideoInput(position: .back)
+        case .backFacing:
+            cameraTypeRelay.accept(.frontFacing)
+            addVideoInput(position: .front)
+        }
+        
+        //configure your session here
+        DispatchQueue.main.async { [unowned self] in
+            self.session.beginConfiguration()
+            if self.session.canAddOutput(self.videoDataOutput) {
+                self.session.addOutput(self.videoDataOutput)
+            }
+            self.session.commitConfiguration()
+        }
+    }
+    
+    func startCaptureSession() {
+        session.startRunning()
+    }
+    
+    func stopCaptureSession() {
+        session.stopRunning()
+    }
+}
+
+// MARK: - Private methods
+extension DetectionViewModel {
+    private func addVideoInput(position: AVCaptureDevice.Position) {
         guard let device: AVCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
                                                                     for: .video, position: position) else { return }
         if let currentInput = self.deviceInput {
@@ -128,37 +158,5 @@ extension DetectionViewModel {
         } catch {
             print(error)
         }
-    }
-    
-    func switchCamera() {
-        switch cameraType{
-        case .frontFacing:
-            self.cameraTypeRelay.accept(.backFacing)
-            self.addVideoInput(position: .back)
-        case .backFacing:
-            self.cameraTypeRelay.accept(.frontFacing)
-            self.addVideoInput(position: .front)
-        }
-        //configure your session here
-        DispatchQueue.main.async {
-            self.session.beginConfiguration()
-            if self.session.canAddOutput(self.videoDataOutput) {
-                self.session.addOutput(self.videoDataOutput)
-            }
-            self.session.commitConfiguration()
-        }
-    }
-    
-    func getCamera(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        let deviceDescoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera], mediaType: .video, position: .unspecified)
-        return deviceDescoverySession.devices.first(where: { $0.position == position })
-    }
-    
-    func startCaptureSession() {
-        session.startRunning()
-    }
-    
-    func stopCaptureSession() {
-        session.stopRunning()
     }
 }

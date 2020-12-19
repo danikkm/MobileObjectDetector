@@ -49,8 +49,6 @@ class ObjectRecognitionViewController: ViewController {
                     self?.requests = []
                     self?.detectionOverlay.removeFromSuperlayer()
                     print("inactive")
-                default:
-                    break
                 }
             }).disposed(by: disposeBag)
     }
