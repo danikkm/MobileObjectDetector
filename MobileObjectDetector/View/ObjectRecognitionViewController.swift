@@ -31,7 +31,8 @@ class ObjectRecognitionViewController: ViewController {
         //        setupVision()
         
         // start the capture
-        startCaptureSession()
+        viewModel.startCaptureSession()
+//        startCaptureSession()
         testBindings()
     }
     
@@ -59,8 +60,8 @@ class ObjectRecognitionViewController: ViewController {
         detectionOverlay.name = "DetectionOverlay"
         detectionOverlay.bounds = CGRect(x: 0.0,
                                          y: 0.0,
-                                         width: bufferSize.width,
-                                         height: bufferSize.height)
+                                         width: viewModel.bufferSize.width,
+                                         height: viewModel.bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
     }
@@ -69,8 +70,8 @@ class ObjectRecognitionViewController: ViewController {
         let bounds = rootLayer.bounds
         var scale: CGFloat
         
-        let xScale: CGFloat = bounds.size.width / bufferSize.height
-        let yScale: CGFloat = bounds.size.height / bufferSize.width
+        let xScale: CGFloat = bounds.size.width / viewModel.bufferSize.height
+        let yScale: CGFloat = bounds.size.height / viewModel.bufferSize.width
         
         scale = fmax(xScale, yScale)
         if scale.isInfinite {
@@ -161,7 +162,7 @@ class ObjectRecognitionViewController: ViewController {
             }
             // Select only the label with the highest confidence.
             let topLabelObservation = objectObservation.labels[0]
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
+            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(viewModel.bufferSize.width), Int(viewModel.bufferSize.height))
             
             let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
             

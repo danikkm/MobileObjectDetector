@@ -25,11 +25,22 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Button"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pHJ-b2-Uyx">
+                                <rect key="frame" x="358" y="44" width="36" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="36" id="bi1-3l-PCh"/>
+                                    <constraint firstAttribute="height" constant="36" id="v2Z-Qf-PxA"/>
+                                </constraints>
+                                <color key="tintColor" red="0.39215686274509803" green="0.82352941176470584" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="gearshape" catalog="system"/>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="pHJ-b2-Uyx" secondAttribute="trailing" constant="20" id="ABs-CT-E2Y"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
+                            <constraint firstItem="pHJ-b2-Uyx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ab1-q4-ZLj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BsQ-wi-k9r" secondAttribute="bottom" constant="72" id="rCo-HD-1X6"/>
                             <constraint firstItem="BsQ-wi-k9r" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="96" id="tQN-WM-kN3"/>
                         </constraints>
@@ -37,6 +48,7 @@
                     <connections>
                         <outlet property="actionButton" destination="BsQ-wi-k9r" id="LOi-Pu-XQz"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="3SC-hN-o6K"/>
+                        <outlet property="settingsMenuButton" destination="pHJ-b2-Uyx" id="fmf-za-7wI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -45,6 +57,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="gearshape" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

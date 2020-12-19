@@ -10,13 +10,14 @@ import AVFoundation
 import Vision
 import RxSwift
 import RxCocoa
+import RxGesture
 
-class ViewController: UIViewController {
-    
+class ViewController: UIViewController, DetectionViewModelEvents {
+
     var viewModel: DetectionViewModel!
-    private var disposeBag = DisposeBag()
-    var bufferSize: CGSize = .zero
     var rootLayer: CALayer! = nil
+    
+    private var disposeBag = DisposeBag()
     
     @IBOutlet weak private var previewView: UIView!
     @IBOutlet weak private var actionButton: UIButton! {
@@ -30,13 +31,10 @@ class ViewController: UIViewController {
             actionButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         }
     }
+    @IBOutlet weak private var settingsMenuButton: UIButton!
     
-    private let session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
-    private let videoDataOutput = AVCaptureVideoDataOutput()
-    
-    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
-    
+
     static func instantiate(viewModel: DetectionViewModel) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
@@ -46,19 +44,17 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.configure(delegate: self)
         navigationController?.navigationBar.isHidden = true
-        setupAdditionalUIElements()
+
         setupAVCapture()
         setupBindings()
     }
     
-    func setupAdditionalUIElements() {
-        //
-    }
     
     func setupBindings() {
         actionButton.rx.tap
-            .bind { _ in
+            .bind { [unowned self] _ in
                 self.actionButton.isSelected.toggle()
                 
                 let isSelected = self.actionButton.isSelected
@@ -77,57 +73,32 @@ class ViewController: UIViewController {
                 }
                 
             }.disposed(by: disposeBag)
+        
+        settingsMenuButton.rx.tap
+            .bind { [unowned self] _ in
+                let settingsVC = SettingsViewController()
+                present(settingsVC, animated: true, completion: nil)
+
+                self.viewModel.stopCaptureSession()
+                
+                settingsVC.rx.deallocated.bind { _ in
+                    self.viewModel.startCaptureSession()
+                    
+                }.disposed(by: self.disposeBag)
+                
+            }.disposed(by: disposeBag)
+        
+        view.rx.longPressGesture()
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                self?.viewModel.switchCamera()
+            }).disposed(by: disposeBag)
     }
     
     func setupAVCapture() {
-        var deviceInput: AVCaptureDeviceInput!
+        viewModel.prepareAVCapture()
         
-        // Select a video device, make an input
-        let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
-        
-        do {
-            deviceInput = try AVCaptureDeviceInput(device: videoDevice!)
-        } catch {
-            print("Could not create video device input: \(error)")
-            return
-        }
-        
-        session.beginConfiguration()
-        session.sessionPreset = .vga640x480 // Model image size is smaller.
-        
-        // Add a video input
-        guard session.canAddInput(deviceInput) else {
-            print("Could not add video device input to the session")
-            session.commitConfiguration()
-            return
-        }
-        session.addInput(deviceInput)
-        if session.canAddOutput(videoDataOutput) {
-            session.addOutput(videoDataOutput)
-            // Add a video data output
-            videoDataOutput.alwaysDiscardsLateVideoFrames = true
-            videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-            videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
-        } else {
-            print("Could not add video data output to the session")
-            session.commitConfiguration()
-            return
-        }
-        let captureConnection = videoDataOutput.connection(with: .video)
-        // Always process the frames
-        captureConnection?.isEnabled = true
-        do {
-            try  videoDevice!.lockForConfiguration()
-            let dimensions = CMVideoFormatDescriptionGetDimensions((videoDevice?.activeFormat.formatDescription)!)
-            bufferSize.width = CGFloat(dimensions.width)
-            bufferSize.height = CGFloat(dimensions.height)
-            
-            videoDevice!.unlockForConfiguration()
-        } catch {
-            print(error)
-        }
-        session.commitConfiguration()
-        previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        previewLayer = AVCaptureVideoPreviewLayer(session: viewModel.session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         rootLayer = previewView.layer
         previewLayer.frame = rootLayer.bounds
@@ -138,10 +109,6 @@ class ViewController: UIViewController {
 
 //MARK: - Setup
 extension ViewController {
-    func startCaptureSession() {
-        session.startRunning()
-    }
-    
     // Clean up capture setup
     func teardownAVCapture() {
         previewLayer.removeFromSuperlayer()
@@ -175,7 +142,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        //        print("Frame dropped")
+            print("Frame dropped")
         
     }
 }
