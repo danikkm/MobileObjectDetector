@@ -14,33 +14,53 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     private (set) var bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     private (set) var downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     
+    private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
+    
+    private let disposeBag = DisposeBag()
+    
     var downloadedModelsObservable: Observable<[CoreMLModel]> {
         return downloadedModelsRelay.asObservable()
     }
     
-    init() {
-        self.mlModelLoaderService = MLModelLoaderService(mlModelsViewModel: self)
+    var bundledMLModelsObservable: Observable<[CoreMLModel]> {
+        return bundledMlModelsRelay.asObservable()
     }
     
-    func test() {
+    var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> {
+        return mlModelsSubject
+            .asObservable()
+            .observeOn(MainScheduler.instance)
+    }
+    
+    var combinedMlModelsObservable: Observable<[CoreMLModel]> {
+        return mlModelsTableViewSectionObservable.map({$0.flatMap({$0.items})})
+    }
+    
+    var dataSource = MLModelSelectionDataSource.dataSource()
+    
+    init() {
+        self.mlModelLoaderService = MLModelLoaderService(mlModelsViewModel: self)
         mlModelLoaderService.loadAllModels(from: .bundle)
-        print(bundledMlModelsRelay.value.forEach {
-            print($0.url," and:", $0.name)
-        })
-        
         mlModelLoaderService.loadAllModels(from: .downloaded)
-        print(downloadedModelsRelay.value.forEach {
-            print($0.url," and:", $0.name)
-        })
+        populateTableViewSection()
     }
 }
 
-struct CoreMLModel {
-    let url: URL
-    let name: String
-    
-    init(url: URL, name: String) {
-        self.url = url
-        self.name = name
+// MARK: - Private methods
+extension MLModelsViewModel {
+    private func populateTableViewSection() {
+        var tableViewSections: [TableViewSection] = []
+        
+        bundledMLModelsObservable.subscribe(onNext: { mlModels in
+            tableViewSections.append(TableViewSection(items: mlModels, header: "Bundled models"))
+            
+        }).disposed(by: disposeBag)
+        
+        downloadedModelsObservable.subscribe(onNext: { mlModels in
+            tableViewSections.append(TableViewSection(items: mlModels, header: "Downloaded models"))
+            
+        }).disposed(by: disposeBag)
+        
+        mlModelsSubject.accept(tableViewSections)
     }
 }

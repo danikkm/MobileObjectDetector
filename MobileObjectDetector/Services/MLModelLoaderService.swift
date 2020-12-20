@@ -37,7 +37,7 @@ class MLModelLoaderService: MLModelLoaderServiceProtocol {
                 .filter { $0.pathExtension == "mlmodelc" }
                 .forEach { mlModel in
                     let mlModelName = mlModel.deletingPathExtension().lastPathComponent
-                    coreMLModels.append(.init(url: mlModel, name: mlModelName))
+                    coreMLModels.append(.init(url: mlModel, name: mlModelName, origin: location))
                 }
             
             switch location {

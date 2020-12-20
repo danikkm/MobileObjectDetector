@@ -28,8 +28,15 @@
 		9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */; };
 		937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */; };
 		937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 937B7F7E258E48B2001979EF /* QuickTableViewController */; };
+		93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */; };
+		93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */; };
+		93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */; };
+		93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D21258F82EB004E6964 /* MLModelItemViewModel.swift */; };
 		93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */; };
 		93F36302258F66B50090BE16 /* MobileNetV2FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */; };
+		93F3630C258F744E0090BE16 /* CoreMLModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F3630B258F744E0090BE16 /* CoreMLModel.swift */; };
+		93F36310258F77C10090BE16 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 93F3630F258F77C10090BE16 /* RxDataSources */; };
+		93F36312258F77C10090BE16 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = 93F36311258F77C10090BE16 /* Differentiator */; };
 		93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -52,8 +59,13 @@
 		9324E981258BDE68007475FE /* Color+Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Palette.swift"; sourceTree = "<group>"; };
 		9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModelProtocol.swift; sourceTree = "<group>"; };
+		93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionViewController.swift; sourceTree = "<group>"; };
+		93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionDataSource.swift; sourceTree = "<group>"; };
+		93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionTableViewCell.swift; sourceTree = "<group>"; };
+		93A96D21258F82EB004E6964 /* MLModelItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelItemViewModel.swift; sourceTree = "<group>"; };
 		93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelLoaderServiceProtocol.swift; sourceTree = "<group>"; };
 		93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2FP16.mlmodel; sourceTree = "<group>"; };
+		93F3630B258F744E0090BE16 /* CoreMLModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLModel.swift; sourceTree = "<group>"; };
 		93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,9 +74,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93F36312258F77C10090BE16 /* Differentiator in Frameworks */,
 				9325DD91258D3C4B00494E5B /* RxCocoa in Frameworks */,
 				9325DD8F258D3C4B00494E5B /* RxRelay in Frameworks */,
 				9325DD97258D3CC500494E5B /* RxGesture in Frameworks */,
+				93F36310258F77C10090BE16 /* RxDataSources in Frameworks */,
 				9325DD8D258D3C4B00494E5B /* RxSwift in Frameworks */,
 				937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */,
 			);
@@ -95,8 +109,9 @@
 				777D6F78258A2C760020F5C3 /* Base */,
 				9324E980258BDE5C007475FE /* Extensions */,
 				937B7F78258E30DE001979EF /* Enums */,
-				93F5F656258D2BF000A4B172 /* ViewModel */,
+				93F36305258F741B0090BE16 /* Model */,
 				93F5F655258D2BEB00A4B172 /* View */,
+				93F5F656258D2BF000A4B172 /* ViewModel */,
 				931909BE258EA7EF0064DE93 /* Services */,
 				93F362FA258F639B0090BE16 /* MLModels */,
 				777D6F66258A26A00020F5C3 /* Main.storyboard */,
@@ -135,11 +150,29 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		93289B5E258FAC050040A470 /* MLModelSelection */ = {
+			isa = PBXGroup;
+			children = (
+				93A96D21258F82EB004E6964 /* MLModelItemViewModel.swift */,
+			);
+			path = MLModelSelection;
+			sourceTree = "<group>";
+		};
 		937B7F78258E30DE001979EF /* Enums */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		93A96D1A258F81C6004E6964 /* MLModelSelection */ = {
+			isa = PBXGroup;
+			children = (
+				93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */,
+				93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */,
+				93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */,
+			);
+			path = MLModelSelection;
 			sourceTree = "<group>";
 		};
 		93F362FA258F639B0090BE16 /* MLModels */ = {
@@ -151,9 +184,18 @@
 			path = MLModels;
 			sourceTree = "<group>";
 		};
+		93F36305258F741B0090BE16 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				93F3630B258F744E0090BE16 /* CoreMLModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		93F5F655258D2BEB00A4B172 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				93A96D1A258F81C6004E6964 /* MLModelSelection */,
 				777D6F64258A26A00020F5C3 /* ViewController.swift */,
 				777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */,
 				93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */,
@@ -164,6 +206,7 @@
 		93F5F656258D2BF000A4B172 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				93289B5E258FAC050040A470 /* MLModelSelection */,
 				9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */,
 				937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */,
 				931909C3258EB7000064DE93 /* MLModelsViewModel.swift */,
@@ -197,6 +240,8 @@
 				9325DD90258D3C4B00494E5B /* RxCocoa */,
 				9325DD96258D3CC500494E5B /* RxGesture */,
 				937B7F7E258E48B2001979EF /* QuickTableViewController */,
+				93F3630F258F77C10090BE16 /* RxDataSources */,
+				93F36311258F77C10090BE16 /* Differentiator */,
 			);
 			productName = MobileObjectDetector;
 			productReference = 777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */;
@@ -229,6 +274,7 @@
 				9325DD8B258D3C4B00494E5B /* XCRemoteSwiftPackageReference "RxSwift" */,
 				9325DD95258D3CC500494E5B /* XCRemoteSwiftPackageReference "RxGesture" */,
 				937B7F7D258E48B2001979EF /* XCRemoteSwiftPackageReference "QuickTableViewController" */,
+				93F3630E258F77C10090BE16 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			productRefGroup = 777D6F5E258A26A00020F5C3 /* Products */;
 			projectDirPath = "";
@@ -261,17 +307,22 @@
 				931909C7258EB7340064DE93 /* MLModelsViewModelProtocol.swift in Sources */,
 				9324E982258BDE68007475FE /* Color+Palette.swift in Sources */,
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
+				93F3630C258F744E0090BE16 /* CoreMLModel.swift in Sources */,
 				937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */,
 				777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */,
 				931909C0258EA7FE0064DE93 /* StorageSerice.swift in Sources */,
 				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
+				93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */,
+				93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */,
 				9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */,
+				93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */,
 				931909C4258EB7000064DE93 /* MLModelsViewModel.swift in Sources */,
 				931909CC258EB9480064DE93 /* MLModelLoaderService.swift in Sources */,
 				777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */,
 				93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */,
 				777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */,
 				777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */,
+				93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */,
 				93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -523,6 +574,14 @@
 				minimumVersion = 1.3.1;
 			};
 		};
+		93F3630E258F77C10090BE16 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -565,6 +624,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 937B7F7D258E48B2001979EF /* XCRemoteSwiftPackageReference "QuickTableViewController" */;
 			productName = QuickTableViewController;
+		};
+		93F3630F258F77C10090BE16 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93F3630E258F77C10090BE16 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
+		};
+		93F36311258F77C10090BE16 /* Differentiator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93F3630E258F77C10090BE16 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = Differentiator;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

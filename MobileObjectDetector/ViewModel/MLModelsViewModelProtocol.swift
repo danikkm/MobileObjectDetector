@@ -7,11 +7,13 @@
 
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 protocol MLModelsViewModelProtocol: class {
     var bundledMlModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
     var downloadedModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
     var downloadedModelsObservable: Observable<[CoreMLModel]> { get }
-    
-    func test()
+    var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> { get }
+    var combinedMlModelsObservable: Observable<[CoreMLModel]> { get }
+    var dataSource: RxTableViewSectionedReloadDataSource<TableViewSection> { get }
 }

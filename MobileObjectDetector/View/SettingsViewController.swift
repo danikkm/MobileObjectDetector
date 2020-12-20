@@ -9,11 +9,15 @@ import UIKit
 import QuickTableViewController
 import MobileCoreServices
 import CoreML
+import RxSwift
+import RxCocoa
+import RxDataSources
 
 
 class SettingsViewController: QuickTableViewController {
     
-    var mlModelsViewModel: MLModelsViewModelProtocol?
+    var mlModelsViewModel: MLModelsViewModelProtocol!
+    let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,20 +29,27 @@ class SettingsViewController: QuickTableViewController {
                 SwitchRow(text: "Setting 2", switchValue: true, action: { _ in })
             ]),
             
-            Section(title: "Tap Action", rows: [
+            Section(title: "Import models", rows: [
                 TapActionRow(text: "Select ML model", action: { [weak self] _ in
                     guard let self = self else { return }
-//                    let documentPicker = UIDocumentPickerViewController(documentTypes: ["mlmodel"], in: .import)
+                    
+                    // TODO: fix errors/warnings when trying to import
+                    // TODO: add only mlmodel extension
                     let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.item], asCopy: true)
                     documentPicker.delegate = self
                     documentPicker.allowsMultipleSelection = false
                     self.present(documentPicker, animated: true, completion: nil)
-                }),
-                TapActionRow(text: "Load all models", action: { [weak self] _ in
-                    guard let self = self else { return }
-                    self.mlModelsViewModel?.test()
                 })
             ]),
+            Section(title: "", rows: [
+                TapActionRow(text: "Open ML model selection", action: { [weak self] _ in
+                    guard let self = self else { return }
+                    let mlModelSelectionVC = MLModelSelectionViewController()
+                    mlModelSelectionVC.prepare(viewModel: self.mlModelsViewModel)
+                    self.navigationController?.pushViewController(mlModelSelectionVC, animated: true)
+                })
+            ])
+            
         ]
         
     }
@@ -72,10 +83,10 @@ extension SettingsViewController: UIDocumentPickerDelegate {
             print("Already exists! Do nothing")
         }
         else {
-
+            
             do {
                 try FileManager.default.copyItem(at: compiledModelURL, to: sandboxFileURL)
-
+                
                 print("Copied file!")
             }
             catch {
