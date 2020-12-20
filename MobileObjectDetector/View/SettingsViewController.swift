@@ -8,6 +8,7 @@
 import UIKit
 import QuickTableViewController
 import MobileCoreServices
+import CoreML
 
 
 class SettingsViewController: QuickTableViewController {
@@ -58,27 +59,37 @@ class SettingsViewController: QuickTableViewController {
 extension SettingsViewController: UIDocumentPickerDelegate {
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        
         guard let selectedFileURL = urls.first else {
             return
         }
-            
+        
+        guard let compiledModelURL = compileMLModel(at: selectedFileURL) else { return }
+        print(compiledModelURL)
         let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let sandboxFileURL = dir.appendingPathComponent(selectedFileURL.lastPathComponent)
-
+        let sandboxFileURL = dir.appendingPathComponent(compiledModelURL.lastPathComponent)
+        print(sandboxFileURL.path, sandboxFileURL)
         if FileManager.default.fileExists(atPath: sandboxFileURL.path) {
             print("Already exists! Do nothing")
         }
         else {
 
             do {
-                try FileManager.default.copyItem(at: selectedFileURL, to: sandboxFileURL)
+                try FileManager.default.copyItem(at: compiledModelURL, to: sandboxFileURL)
 
                 print("Copied file!")
             }
             catch {
                 print("Error: \(error)")
             }
+        }
+    }
+    
+    private func compileMLModel(at selectedFileURL: URL) -> URL? {
+        do {
+            return try MLModel.compileModel(at: selectedFileURL)
+        } catch {
+            print("Compile error")
+            return nil
         }
     }
 }

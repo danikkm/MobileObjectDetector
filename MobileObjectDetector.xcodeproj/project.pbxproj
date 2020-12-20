@@ -28,6 +28,8 @@
 		9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */; };
 		937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */; };
 		937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 937B7F7E258E48B2001979EF /* QuickTableViewController */; };
+		93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */; };
+		93F36302258F66B50090BE16 /* MobileNetV2FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */; };
 		93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +52,8 @@
 		9324E981258BDE68007475FE /* Color+Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Palette.swift"; sourceTree = "<group>"; };
 		9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModelProtocol.swift; sourceTree = "<group>"; };
+		93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelLoaderServiceProtocol.swift; sourceTree = "<group>"; };
+		93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2FP16.mlmodel; sourceTree = "<group>"; };
 		93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,11 +98,11 @@
 				93F5F656258D2BF000A4B172 /* ViewModel */,
 				93F5F655258D2BEB00A4B172 /* View */,
 				931909BE258EA7EF0064DE93 /* Services */,
+				93F362FA258F639B0090BE16 /* MLModels */,
 				777D6F66258A26A00020F5C3 /* Main.storyboard */,
 				777D6F6B258A26A20020F5C3 /* LaunchScreen.storyboard */,
 				777D6F69258A26A20020F5C3 /* Assets.xcassets */,
 				777D6F6E258A26A20020F5C3 /* Info.plist */,
-				777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */,
 			);
 			path = MobileObjectDetector;
 			sourceTree = "<group>";
@@ -118,6 +122,7 @@
 			children = (
 				931909BF258EA7FE0064DE93 /* StorageSerice.swift */,
 				931909CB258EB9480064DE93 /* MLModelLoaderService.swift */,
+				93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -135,6 +140,15 @@
 			children = (
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		93F362FA258F639B0090BE16 /* MLModels */ = {
+			isa = PBXGroup;
+			children = (
+				93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */,
+				777D6F7D258A2FD20020F5C3 /* YOLOv3FP16.mlmodel */,
+			);
+			path = MLModels;
 			sourceTree = "<group>";
 		};
 		93F5F655258D2BEB00A4B172 /* View */ = {
@@ -243,6 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93F36302258F66B50090BE16 /* MobileNetV2FP16.mlmodel in Sources */,
 				931909C7258EB7340064DE93 /* MLModelsViewModelProtocol.swift in Sources */,
 				9324E982258BDE68007475FE /* Color+Palette.swift in Sources */,
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
@@ -254,6 +269,7 @@
 				931909C4258EB7000064DE93 /* MLModelsViewModel.swift in Sources */,
 				931909CC258EB9480064DE93 /* MLModelLoaderService.swift in Sources */,
 				777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */,
+				93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */,
 				777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */,
 				777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */,
 				93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */,
