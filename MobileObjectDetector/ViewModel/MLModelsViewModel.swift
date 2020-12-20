@@ -14,7 +14,6 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     private (set) var bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     private (set) var downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     private (set) var selectedMLModel = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
-    private (set) var isMLModelSelectedRelay = BehaviorRelay<Bool>(value: false)
     
     private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
    
@@ -40,8 +39,8 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
             .map({ $0.flatMap({ $0.items }) })
     }
     
-    var isMLModelSelected: Observable<Bool> {
-        return isMLModelSelectedRelay.asObservable()
+    var selectedMLModelDriver: Driver<CoreMLModel> {
+        return selectedMLModel.asDriver(onErrorJustReturn: .init(url: nil, name: "", origin: .bundle))
     }
     
     var dataSource = MLModelSelectionDataSource.dataSource()

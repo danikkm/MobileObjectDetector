@@ -31,16 +31,24 @@
                                     <constraint firstAttribute="width" constant="36" id="bi1-3l-PCh"/>
                                     <constraint firstAttribute="height" constant="36" id="v2Z-Qf-PxA"/>
                                 </constraints>
-                                <color key="tintColor" red="0.39215686274509803" green="0.82352941176470584" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" systemColor="labelColor"/>
                                 <state key="normal" image="gearshape" catalog="system"/>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RwP-GF-DJs">
+                                <rect key="frame" x="20" y="59" width="57" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="RwP-GF-DJs" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="15" id="1rs-7n-yNI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="pHJ-b2-Uyx" secondAttribute="trailing" constant="20" id="ABs-CT-E2Y"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
                             <constraint firstItem="pHJ-b2-Uyx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ab1-q4-ZLj"/>
+                            <constraint firstItem="RwP-GF-DJs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="lU0-zv-LrR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BsQ-wi-k9r" secondAttribute="bottom" constant="72" id="rCo-HD-1X6"/>
                             <constraint firstItem="BsQ-wi-k9r" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="96" id="tQN-WM-kN3"/>
                         </constraints>
@@ -48,6 +56,7 @@
                     <connections>
                         <outlet property="actionButton" destination="BsQ-wi-k9r" id="LOi-Pu-XQz"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="3SC-hN-o6K"/>
+                        <outlet property="selectedModelLabel" destination="RwP-GF-DJs" id="40T-Ht-0Jc"/>
                         <outlet property="settingsMenuButton" destination="pHJ-b2-Uyx" id="fmf-za-7wI"/>
                     </connections>
                 </viewController>
@@ -58,6 +67,9 @@
     </scenes>
     <resources>
         <image name="gearshape" catalog="system" width="128" height="121"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

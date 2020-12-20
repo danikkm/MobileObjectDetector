@@ -33,7 +33,16 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             actionButton.backgroundColor = UIColor.Button.start
         }
     }
-    @IBOutlet weak private var settingsMenuButton: UIButton!
+    @IBOutlet weak private var settingsMenuButton: UIButton! {
+        didSet {
+            settingsMenuButton.tintColor = .white
+        }
+    }
+    @IBOutlet weak var selectedModelLabel: UILabel! {
+        didSet {
+            selectedModelLabel.tintColor = .white
+        }
+    }
     
     private var disposeBag = DisposeBag()
     

@@ -16,7 +16,7 @@ protocol MLModelsViewModelProtocol: class {
     var downloadedModelsObservable: Observable<[CoreMLModel]> { get }
     var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> { get }
     var combinedMlModelsObservable: Observable<[CoreMLModel]> { get }
-    
+    var selectedMLModelDriver: Driver<CoreMLModel> { get }
     var dataSource: RxTableViewSectionedReloadDataSource<TableViewSection> { get }
     
     func reloadAllMLModels()

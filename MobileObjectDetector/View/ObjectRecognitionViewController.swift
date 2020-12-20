@@ -48,6 +48,11 @@ class ObjectRecognitionViewController: ViewController {
                     print("inactive")
                 }
             }).disposed(by: disposeBag)
+        
+        mlModelsViewModel.selectedMLModelDriver
+            .drive(onNext: { [weak self] mlModel in
+                self?.selectedModelLabel.text = mlModel.name
+            }).disposed(by: disposeBag)
     }
     
     
