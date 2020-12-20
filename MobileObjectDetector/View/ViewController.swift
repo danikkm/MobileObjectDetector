@@ -13,7 +13,10 @@ import RxCocoa
 import RxGesture
 
 class ViewController: UIViewController, DetectionViewModelEvents {
-    var viewModel: DetectionViewModelProtocol!
+    // TODO: think of other way of doing this
+    var detectionViewModel: DetectionViewModelProtocol!
+    var mlModelsViewModel: MLModelsViewModelProtocol!
+    
     var rootLayer: CALayer! = nil
     
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
@@ -34,17 +37,18 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     
     private var disposeBag = DisposeBag()
     
-    static func instantiate(viewModel: DetectionViewModelProtocol) -> ViewController {
+    static func instantiate(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
-        viewController.viewModel = viewModel
+        viewController.detectionViewModel = detectionViewModel
+        viewController.mlModelsViewModel = mlModelsViewModel
         return viewController
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.configure(delegate: self)
+        detectionViewModel.configure(delegate: self)
         
         setupAdditionalUIElements()
         
@@ -86,11 +90,11 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                     self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.stop
                     
-                    self.viewModel.detectionStateRelay.accept(.active)
+                    self.detectionViewModel.detectionStateRelay.accept(.active)
                 } else {
                     self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.start
-                    self.viewModel.detectionStateRelay.accept(.inactive)
+                    self.detectionViewModel.detectionStateRelay.accept(.inactive)
                 }
                 
             }.disposed(by: disposeBag)
@@ -98,14 +102,14 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         settingsMenuButton.rx.tap
             .bind { [unowned self] _ in
                 let settingsVC = SettingsViewController()
+                settingsVC.prepare(viewModel: mlModelsViewModel)
                 self.navigationController?.pushViewController(settingsVC, animated: true)
-//                present(settingsVC, animated: true, completion: nil)
                 
                 // TODO: stop detection if present
-                self.viewModel.stopCaptureSession()
+                self.detectionViewModel.stopCaptureSession()
                 
                 settingsVC.rx.deallocating.bind { _ in
-                    self.viewModel.startCaptureSession()
+                    self.detectionViewModel.startCaptureSession()
                     
                 }.disposed(by: self.disposeBag)
                 
@@ -114,14 +118,15 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         view.rx.longPressGesture()
             .when(.recognized)
             .subscribe(onNext: { [weak self] _ in
-                self?.viewModel.switchCamera()
+                self?.detectionViewModel.switchCamera()
             }).disposed(by: disposeBag)
     }
     
+    
     func setupAVCapture() {
-        viewModel.prepareAVCapture()
+        detectionViewModel.prepareAVCapture()
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: viewModel.session)
+        previewLayer = AVCaptureVideoPreviewLayer(session: detectionViewModel.session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         previewLayer.insertSublayer(blurView.layer, below: rootLayer)
         
@@ -163,6 +168,6 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("Frame dropped")
+//        print("Frame dropped")
     }
 }

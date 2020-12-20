@@ -13,8 +13,11 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     private (set) var mlModelLoaderService: MLModelLoaderServiceProtocol!
     private (set) var bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     private (set) var downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
+    private (set) var selectedMLModel = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
+    private (set) var isMLModelSelectedRelay = BehaviorRelay<Bool>(value: false)
     
     private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
+   
     
     private let disposeBag = DisposeBag()
     
@@ -33,7 +36,12 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     }
     
     var combinedMlModelsObservable: Observable<[CoreMLModel]> {
-        return mlModelsTableViewSectionObservable.map({$0.flatMap({$0.items})})
+        return mlModelsSubject.asObservable()
+            .map({ $0.flatMap({ $0.items }) })
+    }
+    
+    var isMLModelSelected: Observable<Bool> {
+        return isMLModelSelectedRelay.asObservable()
     }
     
     var dataSource = MLModelSelectionDataSource.dataSource()
@@ -43,6 +51,7 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
         mlModelLoaderService.loadAllModels(from: .bundle)
         mlModelLoaderService.loadAllModels(from: .downloaded)
         populateTableViewSection()
+        setInitialMlModel()
     }
 }
 
@@ -62,5 +71,14 @@ extension MLModelsViewModel {
         }).disposed(by: disposeBag)
         
         mlModelsSubject.accept(tableViewSections)
+    }
+    
+    private func setInitialMlModel() {
+        combinedMlModelsObservable.subscribe(onNext: { [weak self] coreMLModel in
+            guard let self = self,
+                  let firstItem = coreMLModel[safe: 0] else { return }
+            print("first item \(firstItem)")
+            self.selectedMLModel.accept(firstItem)
+        }).disposed(by: disposeBag)
     }
 }

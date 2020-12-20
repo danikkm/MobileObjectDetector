@@ -51,21 +51,26 @@ extension MLModelSelectionViewController {
         mlModelsViewModel.mlModelsTableViewSectionObservable
             .bind(to: tableView.rx.items(dataSource: mlModelsViewModel.dataSource))
             .disposed(by: disposeBag)
+        
         tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self = self else { return }
-                let cell = self.tableView.cellForRow(at: indexPath)
                 var index: Int = indexPath.row
                 
                 for i in 0..<indexPath.section {
                     index += self.tableView.numberOfRows(inSection: i)
                 }
-                                
-                self.mlModelsViewModel.combinedMlModelsObservable.subscribe(onNext: { [unowned self] value in
-                    print(value[index].name)
-                }).disposed(by: self.disposeBag)
+                
+
+                self.mlModelsViewModel.combinedMlModelsObservable
+                    .subscribe(onNext: { value in
+                        self.mlModelsViewModel.selectedMLModel.accept(value[index])
+//                        print(value[index].name)
+                    }).disposed(by: self.disposeBag)
+                
             }).disposed(by: disposeBag)
     }
+    
 }
 
 // MARK: - UI Setup

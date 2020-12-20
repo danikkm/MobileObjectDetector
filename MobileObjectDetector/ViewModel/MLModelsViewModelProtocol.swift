@@ -12,8 +12,10 @@ import RxDataSources
 protocol MLModelsViewModelProtocol: class {
     var bundledMlModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
     var downloadedModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
+    var selectedMLModel: BehaviorRelay<CoreMLModel> { get }
     var downloadedModelsObservable: Observable<[CoreMLModel]> { get }
     var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> { get }
     var combinedMlModelsObservable: Observable<[CoreMLModel]> { get }
+    
     var dataSource: RxTableViewSectionedReloadDataSource<TableViewSection> { get }
 }

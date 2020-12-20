@@ -32,6 +32,7 @@
 		93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */; };
 		93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */; };
 		93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D21258F82EB004E6964 /* MLModelItemViewModel.swift */; };
+		93D1C212258FBB7B00B8B795 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D1C211258FBB7B00B8B795 /* Collection+Extension.swift */; };
 		93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */; };
 		93F36302258F66B50090BE16 /* MobileNetV2FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */; };
 		93F3630C258F744E0090BE16 /* CoreMLModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F3630B258F744E0090BE16 /* CoreMLModel.swift */; };
@@ -63,6 +64,7 @@
 		93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionDataSource.swift; sourceTree = "<group>"; };
 		93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		93A96D21258F82EB004E6964 /* MLModelItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelItemViewModel.swift; sourceTree = "<group>"; };
+		93D1C211258FBB7B00B8B795 /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		93F362F7258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelLoaderServiceProtocol.swift; sourceTree = "<group>"; };
 		93F362FC258F640B0090BE16 /* MobileNetV2FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2FP16.mlmodel; sourceTree = "<group>"; };
 		93F3630B258F744E0090BE16 /* CoreMLModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLModel.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				9324E981258BDE68007475FE /* Color+Palette.swift */,
+				93D1C211258FBB7B00B8B795 /* Collection+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
 				93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */,
 				93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */,
+				93D1C212258FBB7B00B8B795 /* Collection+Extension.swift in Sources */,
 				9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */,
 				93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */,
 				931909C4258EB7000064DE93 /* MLModelsViewModel.swift in Sources */,

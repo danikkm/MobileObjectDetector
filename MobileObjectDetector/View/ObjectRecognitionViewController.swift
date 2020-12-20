@@ -15,51 +15,49 @@ class ObjectRecognitionViewController: ViewController {
     private var detectionOverlay: CALayer! = nil
     private var disposeBag = DisposeBag()
     
+    
     // Vision parts
     private var requests = [VNRequest]()
     private var testStop = false
     
     override func setupAVCapture() {
         super.setupAVCapture()
-        print("In super")
         
-        // setup Vision parts
-        //        setupLayers()
-        //        updateLayerGeometry()
-        
-        // This one start the detectiong
-        //        setupVision()
-        
-        // start the capture
-        viewModel.startCaptureSession()
-//        startCaptureSession()
-        testBindings()
+        detectionViewModel.startCaptureSession()
+        setViewModelsBindings()
     }
     
-    func testBindings() {
-        viewModel.detectionStateDriver
+    func setViewModelsBindings() {
+        detectionViewModel.detectionStateDriver
             .distinctUntilChanged()
             .drive(onNext: { [weak self] state in
+                guard let self = self else { return }
+                
                 switch state {
                 case .active:
-                    self?.setupLayers()
-                    self?.updateLayerGeometry()
-                    self?.setupVision()
+                    self.setupLayers()
+                    self.updateLayerGeometry()
+                    guard let url = self.mlModelsViewModel.selectedMLModel.value.url else {
+                        print("Invalid URL for the mlmodel")
+                        return
+                    }
+                    self.setupVision(withURL: url, nameOfTheModel: self.mlModelsViewModel.selectedMLModel.value.name)
                 case .inactive:
-                    self?.requests = []
-                    self?.detectionOverlay.removeFromSuperlayer()
+                    self.requests = []
+                    self.detectionOverlay.removeFromSuperlayer()
                     print("inactive")
                 }
             }).disposed(by: disposeBag)
     }
+    
     
     func setupLayers() {
         detectionOverlay = CALayer() // container layer that has all the renderings of the observations
         detectionOverlay.name = "DetectionOverlay"
         detectionOverlay.bounds = CGRect(x: 0.0,
                                          y: 0.0,
-                                         width: viewModel.bufferSize.width,
-                                         height: viewModel.bufferSize.height)
+                                         width: detectionViewModel.bufferSize.width,
+                                         height: detectionViewModel.bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
     }
@@ -68,8 +66,8 @@ class ObjectRecognitionViewController: ViewController {
         let bounds = rootLayer.bounds
         var scale: CGFloat
         
-        let xScale: CGFloat = bounds.size.width / viewModel.bufferSize.height
-        let yScale: CGFloat = bounds.size.height / viewModel.bufferSize.width
+        let xScale: CGFloat = bounds.size.width / detectionViewModel.bufferSize.height
+        let yScale: CGFloat = bounds.size.height / detectionViewModel.bufferSize.width
         
         scale = fmax(xScale, yScale)
         if scale.isInfinite {
@@ -117,15 +115,13 @@ class ObjectRecognitionViewController: ViewController {
     }
     
     @discardableResult
-    func setupVision() -> NSError? {
+    func setupVision(withURL url: URL, nameOfTheModel: String) -> NSError? {
         // Setup Vision parts
         let error: NSError! = nil
         
-        guard let modelURL = Bundle.main.url(forResource: "YOLOv3FP16", withExtension: "mlmodelc") else {
-            return NSError(domain: "ObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
-        }
         do {
-            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: modelURL))
+            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: url))
+            print("Using: \(nameOfTheModel)")
             let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
                 DispatchQueue.main.async(execute: {
                     // perform all the UI updates on the main queue
@@ -160,7 +156,7 @@ class ObjectRecognitionViewController: ViewController {
             }
             // Select only the label with the highest confidence.
             let topLabelObservation = objectObservation.labels[0]
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(viewModel.bufferSize.width), Int(viewModel.bufferSize.height))
+            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(detectionViewModel.bufferSize.width), Int(detectionViewModel.bufferSize.height))
             
             let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
             

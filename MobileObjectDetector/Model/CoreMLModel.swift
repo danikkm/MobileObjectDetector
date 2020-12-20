@@ -8,11 +8,11 @@
 import Foundation
 
 struct CoreMLModel {
-    let url: URL
+    let url: URL?
     let name: String
     let origin: CoreMLModelLocation
     
-    init(url: URL, name: String, origin: CoreMLModelLocation) {
+    init(url: URL?, name: String, origin: CoreMLModelLocation) {
         self.url = url
         self.name = name
         self.origin = origin

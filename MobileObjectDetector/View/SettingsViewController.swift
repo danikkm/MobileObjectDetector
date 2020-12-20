@@ -22,7 +22,6 @@ class SettingsViewController: QuickTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAdditionalUIElements()
-        prepare()
         tableContents = [
             Section(title: "Camera settings", rows: [
                 SwitchRow(text: "Setting 1", switchValue: true, action: { _ in }),
@@ -54,8 +53,8 @@ class SettingsViewController: QuickTableViewController {
         
     }
     
-    func prepare() {
-        self.mlModelsViewModel = MLModelsViewModel()
+    func prepare(viewModel: MLModelsViewModelProtocol) {
+        self.mlModelsViewModel = viewModel
     }
     
     private func setupAdditionalUIElements() {
