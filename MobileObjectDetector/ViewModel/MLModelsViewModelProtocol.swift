@@ -18,4 +18,6 @@ protocol MLModelsViewModelProtocol: class {
     var combinedMlModelsObservable: Observable<[CoreMLModel]> { get }
     
     var dataSource: RxTableViewSectionedReloadDataSource<TableViewSection> { get }
+    
+    func reloadAllMLModels()
 }

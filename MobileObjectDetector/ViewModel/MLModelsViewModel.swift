@@ -53,6 +53,14 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
         populateTableViewSection()
         setInitialMlModel()
     }
+    
+    func reloadAllMLModels() {
+        downloadedModelsRelay.accept([])
+        mlModelLoaderService.loadAllModels(from: .downloaded)
+        mlModelsSubject.accept([])
+        populateTableViewSection()
+        
+    }
 }
 
 // MARK: - Private methods
@@ -64,6 +72,7 @@ extension MLModelsViewModel {
             tableViewSections.append(TableViewSection(items: mlModels, header: "Bundled models"))
             
         }).disposed(by: disposeBag)
+        
         
         downloadedModelsObservable.subscribe(onNext: { mlModels in
             tableViewSections.append(TableViewSection(items: mlModels, header: "Downloaded models"))

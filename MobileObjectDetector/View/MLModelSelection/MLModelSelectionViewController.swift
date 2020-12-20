@@ -13,6 +13,7 @@ import RxDataSources
 class MLModelSelectionViewController: UIViewController {
     
     var mlModelsViewModel: MLModelsViewModelProtocol!
+    private let refreshControl = UIRefreshControl()
     
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
@@ -36,12 +37,14 @@ class MLModelSelectionViewController: UIViewController {
         tableView
             .translatesAutoresizingMaskIntoConstraints = false
         tableView.tableFooterView = UIView()
+        tableView.refreshControl = refreshControl
         return tableView
         
     }()
     
     func prepare(viewModel: MLModelsViewModelProtocol) {
         self.mlModelsViewModel = viewModel
+        self.mlModelsViewModel.reloadAllMLModels()
     }
 }
 
@@ -52,20 +55,31 @@ extension MLModelSelectionViewController {
             .bind(to: tableView.rx.items(dataSource: mlModelsViewModel.dataSource))
             .disposed(by: disposeBag)
         
+        refreshControl.rx.controlEvent(.valueChanged)
+            .subscribe(onNext: { [weak self] in
+                print("here")
+                self?.mlModelsViewModel.reloadAllMLModels()
+                self?.refreshControl.endRefreshing()
+//                self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        
         tableView.rx.itemSelected
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self = self else { return }
-                var index: Int = indexPath.row
                 
-                for i in 0..<indexPath.section {
-                    index += self.tableView.numberOfRows(inSection: i)
-                }
-                
-
                 self.mlModelsViewModel.combinedMlModelsObservable
-                    .subscribe(onNext: { value in
+                    .subscribe(onNext: { [weak self] value in
+                        guard let self = self else { return }
+                        var index: Int = indexPath.row
+                        
+                        for i in 0..<indexPath.section {
+                            index += self.tableView.numberOfRows(inSection: i)
+                        }
+                        
                         self.mlModelsViewModel.selectedMLModel.accept(value[index])
-//                        print(value[index].name)
                     }).disposed(by: self.disposeBag)
                 
             }).disposed(by: disposeBag)
