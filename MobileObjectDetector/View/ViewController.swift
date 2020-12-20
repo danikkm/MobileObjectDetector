@@ -69,7 +69,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -124,11 +124,15 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                 
             }.disposed(by: disposeBag)
         
-        view.rx.longPressGesture()
-            .when(.recognized)
-            .subscribe(onNext: { [weak self] _ in
-                self?.detectionViewModel.switchCamera()
-            }).disposed(by: disposeBag)
+        
+        view.rx.tapGesture() { gesture, _ in
+            gesture.numberOfTapsRequired = 2
+        }
+        .when(.recognized)
+        .subscribe(onNext: { [weak self] _ in
+            self?.detectionViewModel.switchCamera()
+        })
+        .disposed(by: disposeBag)
     }
     
     
@@ -177,6 +181,6 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-//        print("Frame dropped")
+        //        print("Frame dropped")
     }
 }
