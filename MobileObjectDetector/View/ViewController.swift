@@ -111,7 +111,8 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         settingsMenuButton.rx.tap
             .bind { [unowned self] _ in
                 let settingsVC = SettingsViewController()
-                settingsVC.prepare(viewModel: mlModelsViewModel)
+                
+                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel)
                 self.navigationController?.pushViewController(settingsVC, animated: true)
                 
                 // TODO: stop detection if present
@@ -133,6 +134,13 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             self?.detectionViewModel.switchCamera()
         })
         .disposed(by: disposeBag)
+        
+        detectionViewModel.frameRateObservable
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] frameRate in
+                print("Here")
+                self?.detectionViewModel.changeFrameRate(to: frameRate)
+            }).disposed(by: disposeBag)
     }
     
     

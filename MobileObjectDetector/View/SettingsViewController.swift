@@ -17,14 +17,26 @@ import RxDataSources
 class SettingsViewController: QuickTableViewController {
     
     var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var detectionViewModel: DetectionViewModelProtocol!
+    
     let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupMainUIElements()
         setupAdditionalUIElements()
+    }
+    
+    func prepare(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol) {
+        self.detectionViewModel = detectionViewModel
+        self.mlModelsViewModel = mlModelsViewModel
+    }
+    
+    // TODO: add view model
+    private func setupMainUIElements() {
         tableContents = [
             Section(title: "Camera settings", rows: [
-                SwitchRow(text: "Setting 1", switchValue: true, action: { _ in }),
+                SwitchRow(text: "60 frames per second", switchValue: true, action: self.didToggleFrameRateSection()),
                 SwitchRow(text: "Setting 2", switchValue: true, action: { _ in })
             ]),
             
@@ -50,11 +62,6 @@ class SettingsViewController: QuickTableViewController {
             ])
             
         ]
-        
-    }
-    
-    func prepare(viewModel: MLModelsViewModelProtocol) {
-        self.mlModelsViewModel = viewModel
     }
     
     private func setupAdditionalUIElements() {
@@ -66,8 +73,22 @@ class SettingsViewController: QuickTableViewController {
     }
 }
 
+// MARK: - Actions
+extension SettingsViewController {
+    private func didToggleFrameRateSection() -> (Row) -> Void {
+        return { [weak self] row in
+            if let toggle = row as? SwitchRow {
+                if toggle.switchValue == true {
+                    self?.detectionViewModel.frameRateRelay.accept(60.0)
+                } else {
+                    self?.detectionViewModel.frameRateRelay.accept(30.0)
+                }
+            }
+        }
+    }
+}
+
 extension SettingsViewController: UIDocumentPickerDelegate {
-    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let selectedFileURL = urls.first else {
             return
