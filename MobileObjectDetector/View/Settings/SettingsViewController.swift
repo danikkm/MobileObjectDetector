@@ -7,11 +7,10 @@
 
 import UIKit
 import QuickTableViewController
-import MobileCoreServices
 import CoreML
 import RxSwift
-import RxCocoa
 import RxDataSources
+import NotificationBannerSwift
 
 class SettingsViewController: QuickTableViewController {
     
@@ -110,24 +109,43 @@ extension SettingsViewController: UIDocumentPickerDelegate {
             return
         }
         
+        guard selectedFileURL.pathExtension == "mlmodel" else {
+            let banner = NotificationBanner(title: "Failed", subtitle: "Unsupported format!", style: .danger)
+            
+            banner.show()
+            banner.autoDismiss = true
+            
+            return
+        }
+        
+        guard !FileManager.default.fileExists(atPath: selectedFileURL.path) else {
+            let banner = NotificationBanner(title: "Oops", subtitle: "Already exists!", style: .warning)
+            
+            banner.show()
+            banner.autoDismiss = true
+            
+            return
+        }
+        
         guard let compiledModelURL = compileMLModel(at: selectedFileURL) else { return }
-        print(compiledModelURL)
+        
         let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let sandboxFileURL = dir.appendingPathComponent(compiledModelURL.lastPathComponent)
-        print(sandboxFileURL.path, sandboxFileURL)
-        if FileManager.default.fileExists(atPath: sandboxFileURL.path) {
-            print("Already exists! Do nothing")
-        }
-        else {
+        
+        do {
+            try FileManager.default.copyItem(at: compiledModelURL, to: sandboxFileURL)
             
-            do {
-                try FileManager.default.copyItem(at: compiledModelURL, to: sandboxFileURL)
-                
-                print("Copied file!")
-            }
-            catch {
-                print("Error: \(error)")
-            }
+            let banner = NotificationBanner(title: "Success", subtitle: "Copied file!", style: .success)
+            banner.show()
+            banner.autoDismiss = true
+        }
+        catch {
+            let banner = NotificationBanner(title: "Failed", subtitle: "Unknown error occurred!", style: .danger)
+            
+            banner.show()
+            banner.autoDismiss = true
+            
+            print("Error: \(error)")
         }
     }
     
