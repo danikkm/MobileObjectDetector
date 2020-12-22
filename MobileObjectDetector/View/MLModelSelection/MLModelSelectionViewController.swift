@@ -12,14 +12,14 @@ import RxDataSources
 
 class MLModelSelectionViewController: UIViewController {
     
-    var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var mlModelsViewModel: MLModelsViewModelProtocol!
     private let refreshControl = UIRefreshControl()
     
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        bindTableView()
+        setupBindings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,7 +50,7 @@ class MLModelSelectionViewController: UIViewController {
 
 // MARK: - Binding
 extension MLModelSelectionViewController {
-    func bindTableView() {
+    func setupBindings() {
         mlModelsViewModel.mlModelsTableViewSectionObservable
             .bind(to: tableView.rx.items(dataSource: mlModelsViewModel.dataSource))
             .disposed(by: disposeBag)

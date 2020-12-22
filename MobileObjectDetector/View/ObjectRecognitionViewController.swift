@@ -10,11 +10,10 @@ import AVFoundation
 import Vision
 import RxSwift
 
-
 class ObjectRecognitionViewController: ViewController {
+    
     private var detectionOverlay: CALayer! = nil
     private var disposeBag = DisposeBag()
-    
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -22,12 +21,11 @@ class ObjectRecognitionViewController: ViewController {
     
     override func setupAVCapture() {
         super.setupAVCapture()
-        
         detectionViewModel.startCaptureSession()
-        setViewModelsBindings()
+        setupBindings()
     }
     
-    func setViewModelsBindings() {
+    func setupBindings() {
         detectionViewModel.detectionStateDriver
             .distinctUntilChanged()
             .drive(onNext: { [weak self] state in
@@ -101,7 +99,7 @@ class ObjectRecognitionViewController: ViewController {
         textLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
         textLayer.shadowOpacity = 0.7
         textLayer.shadowOffset = CGSize(width: 2, height: 2)
-        textLayer.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        textLayer.foregroundColor = CGColor.SystemItem.white
         textLayer.contentsScale = 2.0 // retina rendering
         // rotate the layer into screen orientation and scale and mirror
         textLayer.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(.pi / 2.0)).scaledBy(x: 1.0, y: -1.0))
@@ -113,7 +111,7 @@ class ObjectRecognitionViewController: ViewController {
         shapeLayer.bounds = bounds
         shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
         shapeLayer.name = "Found Object"
-        shapeLayer.borderColor = #colorLiteral(red: 0.3921568627, green: 0.8235294118, blue: 1, alpha: 1)
+        shapeLayer.borderColor = CGColor.SystemItem.cyan
         shapeLayer.borderWidth = 4.0
         shapeLayer.cornerRadius = 7
         return shapeLayer

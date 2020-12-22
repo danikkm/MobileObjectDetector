@@ -11,16 +11,6 @@ import RxCocoa
 import AVFoundation
 import Vision
 
-enum CameraType {
-    case frontFacing
-    case backFacing
-}
-
-enum DetectionState {
-    case inactive
-    case active
-}
-
 protocol DetectionViewModelEvents: class {}
 
 final class DetectionViewModel: DetectionViewModelProtocol {

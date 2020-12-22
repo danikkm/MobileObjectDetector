@@ -13,10 +13,10 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-
 class SettingsViewController: QuickTableViewController {
     
-    var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var settingsViewModel: SettingsViewModelProtocol!
     private var detectionViewModel: DetectionViewModelProtocol!
     
     let disposeBag = DisposeBag()
@@ -25,19 +25,19 @@ class SettingsViewController: QuickTableViewController {
         super.viewDidLoad()
         setupMainUIElements()
         setupAdditionalUIElements()
+        setupBindings()
     }
     
-    func prepare(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol) {
+    func prepare(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol, settingsViewModel: SettingsViewModelProtocol) {
         self.detectionViewModel = detectionViewModel
         self.mlModelsViewModel = mlModelsViewModel
+        self.settingsViewModel = settingsViewModel
     }
     
-    // TODO: add view model
     private func setupMainUIElements() {
         tableContents = [
             Section(title: "Camera settings", rows: [
-                SwitchRow(text: "60 frames per second", switchValue: true, action: self.didToggleFrameRateSection()),
-                SwitchRow(text: "Setting 2", switchValue: true, action: { _ in })
+                SwitchRow(text: "60 frames per second", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
             ]),
             
             Section(title: "Import models", rows: [
@@ -71,6 +71,14 @@ class SettingsViewController: QuickTableViewController {
         navigationController?.navigationBar.tintColor = UIColor.SystemItem.cyan
         
     }
+    
+    private func setupBindings() {
+        detectionViewModel.frameRateObservable
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] frameRate in
+                self?.detectionViewModel.changeFrameRate(to: frameRate)
+            }).disposed(by: disposeBag)
+    }
 }
 
 // MARK: - Actions
@@ -80,8 +88,10 @@ extension SettingsViewController {
             if let toggle = row as? SwitchRow {
                 if toggle.switchValue == true {
                     self?.detectionViewModel.frameRateRelay.accept(60.0)
+                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
                 } else {
                     self?.detectionViewModel.frameRateRelay.accept(30.0)
+                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
                 }
             }
         }

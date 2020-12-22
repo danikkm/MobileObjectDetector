@@ -28,6 +28,9 @@
 		9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */; };
 		937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */; };
 		937B7F7F258E48B2001979EF /* QuickTableViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 937B7F7E258E48B2001979EF /* QuickTableViewController */; };
+		9381263A25927163003C31CB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263925927163003C31CB /* SettingsViewModel.swift */; };
+		9381263D25927353003C31CB /* SettingsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263C25927353003C31CB /* SettingsViewModelProtocol.swift */; };
+		938126402592776B003C31CB /* CameraModuleEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263F2592776B003C31CB /* CameraModuleEnum.swift */; };
 		93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */; };
 		93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */; };
 		93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */; };
@@ -61,6 +64,9 @@
 		9324E981258BDE68007475FE /* Color+Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Palette.swift"; sourceTree = "<group>"; };
 		9330492D258A82CC00AC3C91 /* DetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModel.swift; sourceTree = "<group>"; };
 		937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionViewModelProtocol.swift; sourceTree = "<group>"; };
+		9381263925927163003C31CB /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		9381263C25927353003C31CB /* SettingsViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelProtocol.swift; sourceTree = "<group>"; };
+		9381263F2592776B003C31CB /* CameraModuleEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModuleEnum.swift; sourceTree = "<group>"; };
 		93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionViewController.swift; sourceTree = "<group>"; };
 		93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionDataSource.swift; sourceTree = "<group>"; };
 		93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionTableViewCell.swift; sourceTree = "<group>"; };
@@ -167,6 +173,7 @@
 		937B7F78258E30DE001979EF /* Enums */ = {
 			isa = PBXGroup;
 			children = (
+				9381263F2592776B003C31CB /* CameraModuleEnum.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -217,6 +224,8 @@
 				937B7F75258E2902001979EF /* DetectionViewModelProtocol.swift */,
 				931909C3258EB7000064DE93 /* MLModelsViewModel.swift */,
 				931909C6258EB7340064DE93 /* MLModelsViewModelProtocol.swift */,
+				9381263925927163003C31CB /* SettingsViewModel.swift */,
+				9381263C25927353003C31CB /* SettingsViewModelProtocol.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -312,9 +321,11 @@
 				93F36302258F66B50090BE16 /* MobileNetV2FP16.mlmodel in Sources */,
 				931909C7258EB7340064DE93 /* MLModelsViewModelProtocol.swift in Sources */,
 				9324E982258BDE68007475FE /* Color+Palette.swift in Sources */,
+				938126402592776B003C31CB /* CameraModuleEnum.swift in Sources */,
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
 				93F3630C258F744E0090BE16 /* CoreMLModel.swift in Sources */,
 				937B7F76258E2902001979EF /* DetectionViewModelProtocol.swift in Sources */,
+				9381263D25927353003C31CB /* SettingsViewModelProtocol.swift in Sources */,
 				777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */,
 				931909C0258EA7FE0064DE93 /* StorageSerice.swift in Sources */,
 				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
@@ -332,6 +343,7 @@
 				777D6F7E258A2FD30020F5C3 /* YOLOv3FP16.mlmodel in Sources */,
 				93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */,
 				93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */,
+				9381263A25927163003C31CB /* SettingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

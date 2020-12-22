@@ -16,6 +16,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     // TODO: think of other way of doing this
     var detectionViewModel: DetectionViewModelProtocol!
     var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var settingsViewModel: SettingsViewModelProtocol!
     
     var rootLayer: CALayer! = nil
     
@@ -46,23 +47,21 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     
     private var disposeBag = DisposeBag()
     
-    static func instantiate(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol) -> ViewController {
+    static func instantiate(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol, settingsViewModel: SettingsViewModelProtocol) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
         viewController.detectionViewModel = detectionViewModel
         viewController.mlModelsViewModel = mlModelsViewModel
+        viewController.settingsViewModel = settingsViewModel
         return viewController
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         detectionViewModel.configure(delegate: self)
-        
         setupAdditionalUIElements()
-        
         setupAVCapture()
-        setupBindings()
+        setupParentBindings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -86,7 +85,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
-    func setupBindings() {
+    func setupParentBindings() {
         actionButton.rx.tap
             .bind { [unowned self] _ in
                 self.actionButton.isSelected.toggle()
@@ -112,7 +111,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             .bind { [unowned self] _ in
                 let settingsVC = SettingsViewController()
                 
-                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel)
+                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel, settingsViewModel: settingsViewModel)
                 self.navigationController?.pushViewController(settingsVC, animated: true)
                 
                 // TODO: stop detection if present
@@ -134,13 +133,6 @@ class ViewController: UIViewController, DetectionViewModelEvents {
             self?.detectionViewModel.switchCamera()
         })
         .disposed(by: disposeBag)
-        
-        detectionViewModel.frameRateObservable
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] frameRate in
-                print("Here")
-                self?.detectionViewModel.changeFrameRate(to: frameRate)
-            }).disposed(by: disposeBag)
     }
     
     
