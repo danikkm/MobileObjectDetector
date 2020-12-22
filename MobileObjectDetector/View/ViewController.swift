@@ -58,6 +58,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkForCameraAccess()
         detectionViewModel.configure(delegate: self)
         setupAdditionalUIElements()
         setupAVCapture()
@@ -159,6 +160,29 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         rootLayer.addSublayer(previewLayer)
         
         rootLayer.insertSublayer(previewLayer, below: actionButton.layer)
+    }
+}
+
+//MARK: - Private methods
+extension ViewController {
+    private func checkForCameraAccess() {
+        if AVCaptureDevice.authorizationStatus(for: .video) ==  .authorized {
+            return
+        } else {
+            presentCameraAccessAlert()
+        }
+    }
+    
+    private func presentCameraAccessAlert() {
+        let alert = UIAlertController(title: "Oops", message: "To continue, yo'll need to allow camera access in settings", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Open", style: .default, handler: { action in
+                                        switch action.style{
+                                        case .default:
+                                            UIApplication.shared.open(NSURL(string:UIApplication.openSettingsURLString)! as URL, options: [:], completionHandler: nil)
+                                        default:
+                                            break
+                                        }}))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
