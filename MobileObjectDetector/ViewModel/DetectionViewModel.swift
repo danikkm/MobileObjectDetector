@@ -119,9 +119,11 @@ extension DetectionViewModel {
         case .frontFacing:
             cameraTypeRelay.accept(.backFacing)
             addVideoInput(position: .back)
+            videoDevice.set(frameRate: 60.0)
         case .backFacing:
             cameraTypeRelay.accept(.frontFacing)
             addVideoInput(position: .front)
+            videoDevice.set(frameRate: 30.0)
         }
         
         //configure your session here

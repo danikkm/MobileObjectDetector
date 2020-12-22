@@ -10,6 +10,7 @@ import RxCocoa
 
 protocol SettingsViewModelProtocol {
     var frameRateSwitchRelay: BehaviorRelay<FrameRateMode> { get }
-    var frameRateToggleDriver: Driver<FrameRateMode> { get }
+    var isFrameRateToggleEnabledRelay: BehaviorRelay<Bool> { get }
     var frameRateSwitch: Bool { get }
+    var isFrameRateToggleEnabled: Bool { get }
 }

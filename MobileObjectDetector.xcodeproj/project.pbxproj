@@ -31,6 +31,7 @@
 		9381263A25927163003C31CB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263925927163003C31CB /* SettingsViewModel.swift */; };
 		9381263D25927353003C31CB /* SettingsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263C25927353003C31CB /* SettingsViewModelProtocol.swift */; };
 		938126402592776B003C31CB /* CameraModuleEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381263F2592776B003C31CB /* CameraModuleEnum.swift */; };
+		9381264425928235003C31CB /* CustomSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9381264325928235003C31CB /* CustomSwitchCell.swift */; };
 		93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */; };
 		93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */; };
 		93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */; };
@@ -67,6 +68,7 @@
 		9381263925927163003C31CB /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		9381263C25927353003C31CB /* SettingsViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelProtocol.swift; sourceTree = "<group>"; };
 		9381263F2592776B003C31CB /* CameraModuleEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModuleEnum.swift; sourceTree = "<group>"; };
+		9381264325928235003C31CB /* CustomSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwitchCell.swift; sourceTree = "<group>"; };
 		93A96D17258F789C004E6964 /* MLModelSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionViewController.swift; sourceTree = "<group>"; };
 		93A96D1B258F8229004E6964 /* MLModelSelectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionDataSource.swift; sourceTree = "<group>"; };
 		93A96D1E258F8262004E6964 /* MLModelSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelSelectionTableViewCell.swift; sourceTree = "<group>"; };
@@ -178,6 +180,15 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
+		938126422592820F003C31CB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */,
+				9381264325928235003C31CB /* CustomSwitchCell.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		93A96D1A258F81C6004E6964 /* MLModelSelection */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,10 +219,10 @@
 		93F5F655258D2BEB00A4B172 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				938126422592820F003C31CB /* Settings */,
 				93A96D1A258F81C6004E6964 /* MLModelSelection */,
 				777D6F64258A26A00020F5C3 /* ViewController.swift */,
 				777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */,
-				93F5F657258D2CCE00A4B172 /* SettingsViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -336,6 +347,7 @@
 				9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */,
 				93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */,
 				931909C4258EB7000064DE93 /* MLModelsViewModel.swift in Sources */,
+				9381264425928235003C31CB /* CustomSwitchCell.swift in Sources */,
 				931909CC258EB9480064DE93 /* MLModelLoaderService.swift in Sources */,
 				777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */,
 				93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */,

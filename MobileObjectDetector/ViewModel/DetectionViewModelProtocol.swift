@@ -10,12 +10,14 @@ import RxCocoa
 import AVFoundation
 
 protocol DetectionViewModelProtocol {
+    var cameraType: CameraType { get }
     var detectionStateRelay: PublishRelay<DetectionState> { get }
     var session: AVCaptureSession { get }
     var bufferSize: CGSize { get }
     var frameRateRelay: PublishRelay<Double> { get }
     var detectionStateDriver: Driver<DetectionState> { get }
     var frameRateObservable: Observable<Double> { get }
+    var cameraTypeObservable: Observable<CameraType> { get }
     
     func configure(delegate: DetectionViewModelEvents)
     func stopCaptureSession()

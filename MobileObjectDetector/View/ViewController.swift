@@ -41,7 +41,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     }
     @IBOutlet weak var selectedModelLabel: UILabel! {
         didSet {
-            selectedModelLabel.tintColor = .white
+            selectedModelLabel.textColor = .white
         }
     }
     
@@ -86,6 +86,15 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     }
     
     func setupParentBindings() {
+        view.rx.tapGesture() { gesture, _ in
+            gesture.numberOfTapsRequired = 2
+        }
+        .when(.recognized)
+        .subscribe(onNext: { [weak self] _ in
+            self?.detectionViewModel.switchCamera()
+        })
+        .disposed(by: disposeBag)
+        
         actionButton.rx.tap
             .bind { [unowned self] _ in
                 self.actionButton.isSelected.toggle()
@@ -124,15 +133,17 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                 
             }.disposed(by: disposeBag)
         
-        
-        view.rx.tapGesture() { gesture, _ in
-            gesture.numberOfTapsRequired = 2
-        }
-        .when(.recognized)
-        .subscribe(onNext: { [weak self] _ in
-            self?.detectionViewModel.switchCamera()
-        })
-        .disposed(by: disposeBag)
+        detectionViewModel.cameraTypeObservable
+            .subscribe(onNext: { [weak self] type in
+                switch type {
+                case .backFacing:
+                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
+                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(true)
+                case .frontFacing:
+                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
+                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(false)
+                }
+            }).disposed(by: disposeBag)
     }
     
     

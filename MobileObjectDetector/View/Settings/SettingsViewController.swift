@@ -37,7 +37,7 @@ class SettingsViewController: QuickTableViewController {
     private func setupMainUIElements() {
         tableContents = [
             Section(title: "Camera settings", rows: [
-                SwitchRow(text: "60 frames per second", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
+                SwitchRow<CustomSwitchCell>(text: "60 frames per second", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
             ]),
             
             Section(title: "Import models", rows: [
@@ -64,6 +64,12 @@ class SettingsViewController: QuickTableViewController {
         ]
     }
     
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        (cell as? CustomSwitchCell)?.configure(isSwitchControlEnabled: self.settingsViewModel.isFrameRateToggleEnabled)
+        return cell
+    }
+    
     private func setupAdditionalUIElements() {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Settings"
@@ -85,7 +91,7 @@ class SettingsViewController: QuickTableViewController {
 extension SettingsViewController {
     private func didToggleFrameRateSection() -> (Row) -> Void {
         return { [weak self] row in
-            if let toggle = row as? SwitchRow {
+            if let toggle = row as? SwitchRow<CustomSwitchCell> {
                 if toggle.switchValue == true {
                     self?.detectionViewModel.frameRateRelay.accept(60.0)
                     self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
