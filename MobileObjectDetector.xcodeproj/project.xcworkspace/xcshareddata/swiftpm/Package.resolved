@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MarqueeLabel",
+        "repositoryURL": "https://github.com/cbpowell/MarqueeLabel",
+        "state": {
+          "branch": null,
+          "revision": "d92fe1583dbf43fa3b70229a49fa7da6b36750d4",
+          "version": "4.0.5"
+        }
+      },
+      {
+        "package": "NotificationBannerSwift",
+        "repositoryURL": "https://github.com/Daltron/NotificationBanner.git",
+        "state": {
+          "branch": null,
+          "revision": "2ce5c49d8ee4865f01a3ce3bbe078664c78c7a3c",
+          "version": "3.0.6"
+        }
+      },
+      {
+        "package": "QuickTableViewController",
+        "repositoryURL": "https://github.com/bcylin/QuickTableViewController.git",
+        "state": {
+          "branch": null,
+          "revision": "574885ec390c434f39636e2c0c68860f7f3cd168",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "package": "RxDataSources",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources.git",
+        "state": {
+          "branch": null,
+          "revision": "a18cee01c9ee55f04d0c7eb15c77a96c3648c88e",
+          "version": "4.0.1"
+        }
+      },
+      {
+        "package": "RxGesture",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxGesture",
+        "state": {
+          "branch": null,
+          "revision": "867f176b6695829e350fafc00b5a849bb46a1857",
+          "version": "3.0.3"
+        }
+      },
+      {
+        "package": "RxSwift",
+        "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "002d325b0bdee94e7882e1114af5ff4fe1e96afa",
+          "version": "5.1.1"
+        }
+      },
+      {
+        "package": "SnapKit",
+        "repositoryURL": "https://github.com/SnapKit/SnapKit",
+        "state": {
+          "branch": null,
+          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
+          "version": "5.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

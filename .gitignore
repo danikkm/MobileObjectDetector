@@ -9,4 +9,3 @@ Pods
 *.gcda
 *.xcscmblueprint
 .idea
-*.mlmodel
