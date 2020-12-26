@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreML
 
 enum CoreMLModelLocation {
     case bundle
@@ -49,6 +50,17 @@ class MLModelLoaderService: MLModelLoaderServiceProtocol {
             
         } catch {
             print(error)
+        }
+    }
+    
+    func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL? {
+        do {
+            let compilePath = try MLModel.compileModel(at: selectedFileURL)
+            
+            return compilePath
+        } catch {
+            print(error, "Compile error")
+            return nil
         }
     }
 }

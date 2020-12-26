@@ -17,7 +17,6 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     
     private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
    
-    
     private let disposeBag = DisposeBag()
     
     var downloadedModelsObservable: Observable<[CoreMLModel]> {
@@ -53,6 +52,10 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
         setInitialMlModel()
     }
     
+    func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL? {
+        return mlModelLoaderService.compileMLModel(at: selectedFileURL, originalName: originalName)
+    }
+    
     func reloadAllMLModels() {
         downloadedModelsRelay.accept([])
         mlModelLoaderService.loadAllModels(from: .downloaded)
@@ -85,7 +88,7 @@ extension MLModelsViewModel {
         combinedMlModelsObservable.subscribe(onNext: { [weak self] coreMLModel in
             guard let self = self,
                   let firstItem = coreMLModel[safe: 0] else { return }
-            print("first item \(firstItem)")
+            
             self.selectedMLModel.accept(firstItem)
         }).disposed(by: disposeBag)
     }

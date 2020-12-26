@@ -9,4 +9,5 @@ import Foundation
 
 protocol MLModelLoaderServiceProtocol: class {
     func loadAllModels(from location: CoreMLModelLocation)
+    func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL?
 }

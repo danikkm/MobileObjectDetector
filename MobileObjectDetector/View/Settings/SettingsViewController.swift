@@ -118,7 +118,14 @@ extension SettingsViewController: UIDocumentPickerDelegate {
             return
         }
         
-        guard !FileManager.default.fileExists(atPath: selectedFileURL.path) else {
+        let originalName = selectedFileURL.deletingPathExtension().lastPathComponent
+        
+        guard let compiledModelURL = mlModelsViewModel.compileMLModel(at: selectedFileURL, originalName: originalName) else { return }
+        
+        let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let destinationPath = directory.appendingPathComponent("\(originalName).mlmodelc")
+        
+        guard !FileManager.default.fileExists(atPath: destinationPath.path) else {
             let banner = NotificationBanner(title: "Oops", subtitle: "Already exists!", style: .warning)
             
             banner.show()
@@ -127,13 +134,8 @@ extension SettingsViewController: UIDocumentPickerDelegate {
             return
         }
         
-        guard let compiledModelURL = compileMLModel(at: selectedFileURL) else { return }
-        
-        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let sandboxFileURL = dir.appendingPathComponent(compiledModelURL.lastPathComponent)
-        
         do {
-            try FileManager.default.copyItem(at: compiledModelURL, to: sandboxFileURL)
+            try FileManager.default.moveItem(at: compiledModelURL, to: destinationPath)
             
             let banner = NotificationBanner(title: "Success", subtitle: "Copied file!", style: .success)
             banner.show()
@@ -146,15 +148,6 @@ extension SettingsViewController: UIDocumentPickerDelegate {
             banner.autoDismiss = true
             
             print("Error: \(error)")
-        }
-    }
-    
-    private func compileMLModel(at selectedFileURL: URL) -> URL? {
-        do {
-            return try MLModel.compileModel(at: selectedFileURL)
-        } catch {
-            print("Compile error")
-            return nil
         }
     }
 }
