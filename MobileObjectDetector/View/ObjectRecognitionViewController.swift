@@ -179,15 +179,23 @@ class ObjectRecognitionViewController: ViewController {
             return
         }
         
-        let exifOrientation = exifOrientationFromDeviceOrientation()
-        
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: exifOrientation, options: [:])
-        
-        do {
-            try imageRequestHandler.perform(self.requests)
-        } catch {
-            print(error)
+        var options: [VNImageOption : Any] = [:]
+        if let cameraIntrinsicMatrix = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
+            options[.cameraIntrinsics] = cameraIntrinsicMatrix
         }
         
+        let exifOrientation = exifOrientationFromDeviceOrientation()
+        autoreleasepool {
+            var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
+            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!, orientation: exifOrientation, options: options)
+            
+            do {
+                try imageRequestHandler.perform(self.requests)
+            } catch {
+                drawVisionRequestResults([])
+                print(error)
+            }
+            clonePixelBuffer = nil
+        }
     }
 }
