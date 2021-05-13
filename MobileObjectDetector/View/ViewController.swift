@@ -13,6 +13,7 @@ import RxCocoa
 import RxGesture
 
 class ViewController: UIViewController, DetectionViewModelEvents {
+    
     // TODO: think of other way of doing this
     var detectionViewModel: DetectionViewModelProtocol!
     var mlModelsViewModel: MLModelsViewModelProtocol!
@@ -25,7 +26,6 @@ class ViewController: UIViewController, DetectionViewModelEvents {
     @IBOutlet weak private var previewView: UIView!
     @IBOutlet weak private var actionButton: UIButton! {
         didSet {
-            // TODO: refactor this
             actionButton.setTitle("Start Detecting", for: .normal)
             actionButton.layer.cornerRadius = 32
             actionButton.clipsToBounds = true
@@ -107,7 +107,6 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                     self.actionButton.setTitleColor(.black, for: .selected)
                     self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.stop
-                    
                     self.detectionViewModel.detectionStateRelay.accept(.active)
                 } else {
                     self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
@@ -119,13 +118,12 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         
         settingsMenuButton.rx.tap
             .bind { [unowned self] _ in
-                let settingsVC = SettingsViewController()
-                
-                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel, settingsViewModel: settingsViewModel)
-                self.navigationController?.pushViewController(settingsVC, animated: true)
-                
                 // TODO: stop detection if present
                 self.detectionViewModel.stopCaptureSession()
+                
+                let settingsVC = SettingsViewController()
+                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel, settingsViewModel: settingsViewModel)
+                self.navigationController?.pushViewController(settingsVC, animated: true)
                 
                 settingsVC.rx.deallocating.bind { _ in
                     self.detectionViewModel.startCaptureSession()

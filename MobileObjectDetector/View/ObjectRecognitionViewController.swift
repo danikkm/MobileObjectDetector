@@ -53,7 +53,6 @@ class ObjectRecognitionViewController: ViewController {
             }).disposed(by: disposeBag)
     }
     
-    
     func setupLayers() {
         detectionOverlay = CALayer() // container layer that has all the renderings of the observations
         detectionOverlay.name = "DetectionOverlay"
@@ -125,11 +124,11 @@ class ObjectRecognitionViewController: ViewController {
         do {
             let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: url))
             print("Using: \(nameOfTheModel)")
-            let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
+            let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { [weak self] request, error in
                 DispatchQueue.main.async(execute: {
                     // perform all the UI updates on the main queue
                     if let results = request.results {
-                        self.drawVisionRequestResults(results)
+                        self?.drawVisionRequestResults(results)
                     }
                     
                     if let error = error {
@@ -146,7 +145,6 @@ class ObjectRecognitionViewController: ViewController {
         
         return error
     }
-    
     
     func drawVisionRequestResults(_ results: [Any]) {
         CATransaction.begin()
@@ -172,7 +170,6 @@ class ObjectRecognitionViewController: ViewController {
         self.updateLayerGeometry()
         CATransaction.commit()
     }
-    
     
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {

@@ -25,7 +25,7 @@ class MLModelSelectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         applyConstraints()
-        title = "ML Model Selection"
+        title = "Available Models"
     }
     
     // MARK: - Properties

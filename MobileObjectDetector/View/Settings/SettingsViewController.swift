@@ -36,11 +36,18 @@ class SettingsViewController: QuickTableViewController {
     private func setupMainUIElements() {
         tableContents = [
             Section(title: "Camera settings", rows: [
-                SwitchRow<CustomSwitchCell>(text: "60 frames per second", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
+                SwitchRow<CustomSwitchCell>(text: "60 FPS", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
             ]),
-            
+            Section(title: "Select Model", rows: [
+                TapActionRow(text: "Open List of Models", action: { [weak self] _ in
+                    guard let self = self else { return }
+                    let mlModelSelectionVC = MLModelSelectionViewController()
+                    mlModelSelectionVC.prepare(viewModel: self.mlModelsViewModel)
+                    self.navigationController?.pushViewController(mlModelSelectionVC, animated: true)
+                })
+            ]),
             Section(title: "Import models", rows: [
-                TapActionRow(text: "Select ML model", action: { [weak self] _ in
+                TapActionRow(text: "Open Files", action: { [weak self] _ in
                     guard let self = self else { return }
                     
                     // TODO: fix errors/warnings when trying to import
@@ -50,16 +57,7 @@ class SettingsViewController: QuickTableViewController {
                     documentPicker.allowsMultipleSelection = false
                     self.present(documentPicker, animated: true, completion: nil)
                 })
-            ]),
-            Section(title: "", rows: [
-                TapActionRow(text: "Open ML model selection", action: { [weak self] _ in
-                    guard let self = self else { return }
-                    let mlModelSelectionVC = MLModelSelectionViewController()
-                    mlModelSelectionVC.prepare(viewModel: self.mlModelsViewModel)
-                    self.navigationController?.pushViewController(mlModelSelectionVC, animated: true)
-                })
             ])
-            
         ]
     }
     
