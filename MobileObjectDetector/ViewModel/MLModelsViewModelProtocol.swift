@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-protocol MLModelsViewModelProtocol: class {
+protocol MLModelsViewModelProtocol: AnyObject {
     var bundledMlModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
     var downloadedModelsRelay: BehaviorRelay<[CoreMLModel]> { get }
     var selectedMLModel: BehaviorRelay<CoreMLModel> { get }

@@ -30,7 +30,7 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
     var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> {
         return mlModelsSubject
             .asObservable()
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
     }
     
     var combinedMlModelsObservable: Observable<[CoreMLModel]> {

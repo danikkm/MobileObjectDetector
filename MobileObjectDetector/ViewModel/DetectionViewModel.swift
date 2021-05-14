@@ -11,7 +11,7 @@ import RxCocoa
 import AVFoundation
 import Vision
 
-protocol DetectionViewModelEvents: class {}
+protocol DetectionViewModelEvents: AnyObject {}
 
 final class DetectionViewModel: DetectionViewModelProtocol {
     private weak var delegate: DetectionViewModelEvents?

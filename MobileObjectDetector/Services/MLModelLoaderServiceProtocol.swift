@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol MLModelLoaderServiceProtocol: class {
+protocol MLModelLoaderServiceProtocol: AnyObject {
     func loadAllModels(from location: CoreMLModelLocation)
     func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL?
 }

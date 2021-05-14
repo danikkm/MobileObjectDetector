@@ -595,7 +595,7 @@
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.1;
+				minimumVersion = 6.2.0;
 			};
 		};
 		9325DD95258D3CC500494E5B /* XCRemoteSwiftPackageReference "RxGesture" */ = {
@@ -603,7 +603,7 @@
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.3;
+				minimumVersion = 4.0.2;
 			};
 		};
 		93304932258A83CC00AC3C91 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
@@ -635,7 +635,7 @@
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.1;
+				minimumVersion = 5.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

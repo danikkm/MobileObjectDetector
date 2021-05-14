@@ -33,7 +33,7 @@
                                 <color key="tintColor" systemColor="labelColor"/>
                                 <state key="normal" image="gearshape" catalog="system"/>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RwP-GF-DJs">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="RwP-GF-DJs">
                                 <rect key="frame" x="20" y="59" width="57" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="textColor"/>
@@ -54,6 +54,7 @@
                             <constraint firstItem="RwP-GF-DJs" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="15" id="1rs-7n-yNI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="pHJ-b2-Uyx" secondAttribute="trailing" constant="20" id="ABs-CT-E2Y"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BsQ-wi-k9r" secondAttribute="bottom" constant="72" id="DCI-cs-qUX"/>
+                            <constraint firstItem="pHJ-b2-Uyx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="RwP-GF-DJs" secondAttribute="trailing" constant="12" id="OJw-uN-f4S"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
                             <constraint firstItem="pHJ-b2-Uyx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ab1-q4-ZLj"/>
                             <constraint firstItem="gMH-0z-YI6" firstAttribute="top" secondItem="RwP-GF-DJs" secondAttribute="bottom" constant="8" id="gio-pp-aaX"/>
