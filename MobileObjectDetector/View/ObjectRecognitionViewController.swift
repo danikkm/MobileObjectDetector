@@ -14,11 +14,7 @@ class ObjectRecognitionViewController: ViewController {
     
     private var detectionOverlay: CALayer! = nil
     private var disposeBag = DisposeBag()
-    
-    // Vision parts
-    private var requests = [VNRequest]()
-    private var testStop = false
-    
+        
     override func setupAVCapture() {
         super.setupAVCapture()
         detectionViewModel.startCaptureSession()
@@ -35,19 +31,28 @@ class ObjectRecognitionViewController: ViewController {
                 case .active:
                     self.setupLayers()
                     self.updateLayerGeometry()
-                    guard let url = self.mlModelsViewModel.selectedMLModel.value.url else {
+                    
+                    guard let url = self.detectionViewModel.selectedModel.url else {
                         print("Invalid URL for the mlmodel")
                         return
                     }
-                    self.setupVision(withURL: url, nameOfTheModel: self.mlModelsViewModel.selectedMLModel.value.name)
+                    
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        // TODO: refactor to view model
+                        self.setupVision(withURL: url, nameOfTheModel: self.detectionViewModel.selectedModel.name)
+                    }
+                    
+                    self.setupVision(withURL: url,
+                                     nameOfTheModel: self.detectionViewModel.selectedModel.name)
                 case .inactive:
-                    self.requests = []
+                    // TODO: is it necessary?
+                    self.detectionViewModel.setRequests([])
                     self.detectionOverlay.removeFromSuperlayer()
                     print("inactive")
                 }
             }).disposed(by: disposeBag)
         
-        mlModelsViewModel.selectedMLModelDriver
+        detectionViewModel.model.selectedModelDriver
             .drive(onNext: { [weak self] mlModel in
                 self?.selectedModelLabel.text = mlModel.name
             }).disposed(by: disposeBag)
@@ -116,11 +121,7 @@ class ObjectRecognitionViewController: ViewController {
         return shapeLayer
     }
     
-    @discardableResult
-    func setupVision(withURL url: URL, nameOfTheModel: String) -> NSError? {
-        // Setup Vision parts
-        let error: NSError! = nil
-        
+    func setupVision(withURL url: URL, nameOfTheModel: String) {
         do {
             let config = MLModelConfiguration()
             config.computeUnits = .all
@@ -130,27 +131,25 @@ class ObjectRecognitionViewController: ViewController {
             print("Using: \(nameOfTheModel), running on \(config.computeUnits.rawValue)")
             
             let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
-                let startTime = CACurrentMediaTime()
+                //                let startTime = CACurrentMediaTime()
                 DispatchQueue.main.async {
                     if let results = request.results {
                         self?.drawVisionRequestResults(results)
                     }
                     
-                    if let error = error {
-                        print(error.localizedDescription)
+                    if let _error = error {
+                        print(_error.localizedDescription)
                     }
                 }
-                let endTime = CACurrentMediaTime()
-                print("Done inference in: \(endTime - startTime))")
+                //                let endTime = CACurrentMediaTime()
+                //                print("Done inference in: \(endTime - startTime))")
             }
             
-            self.requests = [objectRecognition]
+            detectionViewModel.setRequests([objectRecognition])
         }
         catch let error as NSError {
             print("Model loading went wrong: \(error)")
         }
-        
-        return error
     }
     
     func drawVisionRequestResults(_ results: [Any]) {
@@ -172,8 +171,8 @@ class ObjectRecognitionViewController: ViewController {
             let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
             
             let textLayer = createTextSubLayerInBounds(objectBounds,
-                                                            identifier: topLabelObservation.identifier,
-                                                            confidence: topLabelObservation.confidence)
+                                                       identifier: topLabelObservation.identifier,
+                                                       confidence: topLabelObservation.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
         }
@@ -197,14 +196,14 @@ class ObjectRecognitionViewController: ViewController {
         }
         
         let exifOrientation = exifOrientationFromDeviceOrientation()
-
+        
         autoreleasepool {
             var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
             let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!,
                                                             orientation: exifOrientation,
                                                             options: options)
             do {
-                try imageRequestHandler.perform(self.requests)
+                try imageRequestHandler.perform(detectionViewModel.requests)
             } catch {
                 drawVisionRequestResults([])
                 print(error)

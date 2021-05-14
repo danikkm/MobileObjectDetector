@@ -14,9 +14,9 @@ import NotificationBannerSwift
 
 class SettingsViewController: QuickTableViewController {
     
-    private var mlModelsViewModel: MLModelsViewModelProtocol!
+//    private var mlModelsViewModel: MLModelsViewModelProtocol!
     private var settingsViewModel: SettingsViewModelProtocol!
-    private var detectionViewModel: DetectionViewModelProtocol!
+    private var detectionViewModel: DetectionViewModel!
     
     let disposeBag = DisposeBag()
     
@@ -27,10 +27,10 @@ class SettingsViewController: QuickTableViewController {
         setupBindings()
     }
     
-    func prepare(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol, settingsViewModel: SettingsViewModelProtocol) {
+    func prepare(detectionViewModel: DetectionViewModel) {
         self.detectionViewModel = detectionViewModel
-        self.mlModelsViewModel = mlModelsViewModel
-        self.settingsViewModel = settingsViewModel
+//        self.mlModelsViewModel = mlModelsViewModel
+        self.settingsViewModel = SettingsViewModel()
     }
     
     private func setupMainUIElements() {
@@ -41,8 +41,9 @@ class SettingsViewController: QuickTableViewController {
             Section(title: "Select Model", rows: [
                 TapActionRow(text: "Open List of Models", action: { [weak self] _ in
                     guard let self = self else { return }
+                    
                     let mlModelSelectionVC = MLModelSelectionViewController()
-                    mlModelSelectionVC.prepare(viewModel: self.mlModelsViewModel)
+                    mlModelSelectionVC.prepare(viewModel: self.detectionViewModel)
                     self.navigationController?.pushViewController(mlModelSelectionVC, animated: true)
                 })
             ]),
@@ -118,7 +119,7 @@ extension SettingsViewController: UIDocumentPickerDelegate {
         
         let originalName = selectedFileURL.deletingPathExtension().lastPathComponent
         
-        guard let compiledModelURL = mlModelsViewModel.compileMLModel(at: selectedFileURL, originalName: originalName) else { return }
+        guard let compiledModelURL = detectionViewModel.model.compileMLModel(at: selectedFileURL, originalName: originalName) else { return }
         
         let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let destinationPath = directory.appendingPathComponent("\(originalName).mlmodelc")

@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class SettingsViewModel: SettingsViewModelProtocol {
+    
     private (set) var frameRateSwitchRelay = BehaviorRelay<FrameRateMode>(value: .smooth)
     private (set) var isFrameRateToggleEnabledRelay = BehaviorRelay<Bool>(value: false)
     

@@ -13,35 +13,34 @@ import Vision
 
 protocol DetectionViewModelEvents: AnyObject {}
 
-final class DetectionViewModel: DetectionViewModelProtocol {
+final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, DetectionViewModelProtocol {
+    
     private weak var delegate: DetectionViewModelEvents?
+    
+    //    private (set) var modelViewModel: MLModelsViewModelProtocol
+    
+    private (set) var requests = [VNRequest]()
     
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
     private (set) var detectionStateRelay = PublishRelay<DetectionState>()
     private let coreMLModel = PublishSubject<VNCoreMLModel>()
     
-    private (set) var videoDeviceRelay = BehaviorRelay<AVCaptureDevice?>(value: AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first)
-    
     private (set) var session = AVCaptureSession()
     private (set) var bufferSize: CGSize = .zero
     private (set) var deviceInput: AVCaptureDeviceInput!
     private (set) var frameRateRelay = PublishRelay<Double>()
-    private let capturePreset: AVCaptureSession.Preset?
+    private var capturePreset: AVCaptureSession.Preset!
     private let videoDataOutput = AVCaptureVideoDataOutput()
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
     
+    private var videoDevice: AVCaptureDevice!
     
     var cameraType: CameraType {
         return cameraTypeRelay.value
     }
     
-    var videoDevice: AVCaptureDevice {
-        // TODO: change this
-        return videoDeviceRelay.value!
-    }
-    
     var detectionStateDriver: Driver<DetectionState> {
-        return detectionStateRelay.asDriver(onErrorJustReturn: .inactive)
+        return detectionStateRelay.asDriver(onErrorJustReturn: .inactive).debug()
     }
     
     var frameRateObservable: Observable<Double> {
@@ -52,37 +51,35 @@ final class DetectionViewModel: DetectionViewModelProtocol {
         return cameraTypeRelay.asObservable()
     }
     
-    init() {
-        self.capturePreset = .vga640x480
+    var selectedModel: CoreMLModel {
+        return model.selectedModel
+    }
+    //    lazy var visionModel: VNCoreMLModel = {
+    //      do {
+    //        return try VNCoreMLModel(for: coreMLModel.model)
+    //      } catch {
+    //        fatalError("Failed to create VNCoreMLModel: \(error)")
+    //      }
+    //    }()
+    
+    func setRequests(_ requests: [VNRequest]) {
+        self.requests = requests
     }
     
     func configure(delegate: DetectionViewModelEvents) {
         self.delegate = delegate
+        self.capturePreset = .vga640x480
     }
 }
 
 // MARK: - Public methods
 extension DetectionViewModel {
     func prepareAVCapture() {
-        do {
-            // remove force unwrap
-            self.deviceInput = try AVCaptureDeviceInput(device: videoDevice)
-        } catch {
-            print("Could not create video device input: \(error)")
-            return
-        }
-        
+        addVideoInput(position: .back)
         
         session.beginConfiguration()
         session.sessionPreset = capturePreset ?? .vga640x480 // Model image size is smaller.
         
-        guard session.canAddInput(self.deviceInput) else {
-            print("Could not add video device input to the session")
-            session.commitConfiguration()
-            return
-        }
-        
-        session.addInput(deviceInput)
         if session.canAddOutput(videoDataOutput) {
             session.addOutput(videoDataOutput)
             // Add a video data output
@@ -158,18 +155,19 @@ extension DetectionViewModel {
 extension DetectionViewModel {
     private func addVideoInput(position: AVCaptureDevice.Position) {
         guard let device: AVCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                                    for: .video, position: position) else { return }
-        videoDeviceRelay.accept(device)
-
-        if let currentInput = self.deviceInput {
+                                                                    for: .video,
+                                                                    position: position) else { return }
+        videoDevice = device
+        
+        if let currentInput = deviceInput {
             session.removeInput(currentInput)
-            self.deviceInput = nil
+            deviceInput = nil
         }
         do {
             let input = try AVCaptureDeviceInput(device: videoDevice)
             if session.canAddInput(input) {
                 session.addInput(input)
-                self.deviceInput = input
+                deviceInput = input
             }
         } catch {
             print(error)

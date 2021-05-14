@@ -15,46 +15,29 @@ import RxGesture
 class ViewController: UIViewController, DetectionViewModelEvents {
     
     // TODO: think of other way of doing this
-    var detectionViewModel: DetectionViewModelProtocol!
-    var mlModelsViewModel: MLModelsViewModelProtocol!
-    private var settingsViewModel: SettingsViewModelProtocol!
+    var detectionViewModel: DetectionViewModel!
+    //    var mlModelsViewModel: MLModelsViewModelProtocol!
+    //    private var settingsViewModel: SettingsViewModelProtocol!
     
     var rootLayer: CALayer! = nil
     
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     private var blurView: UIView!
     @IBOutlet weak private var previewView: UIView!
-    @IBOutlet weak private var actionButton: UIButton! {
-        didSet {
-            actionButton.setTitle("Start Detecting", for: .normal)
-            actionButton.layer.cornerRadius = 32
-            actionButton.clipsToBounds = true
-            actionButton.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)
-            actionButton.setTitleColor(.black, for: .normal)
-            actionButton.backgroundColor = UIColor.Button.start
-        }
-    }
-    @IBOutlet weak private var settingsMenuButton: UIButton! {
-        didSet {
-            settingsMenuButton.tintColor = .white
-        }
-    }
-    @IBOutlet weak var selectedModelLabel: UILabel! {
-        didSet {
-            selectedModelLabel.textColor = .white
-        }
-    }
+    @IBOutlet weak private var actionButton: UIButton!
+    @IBOutlet weak private var settingsMenuButton: UIButton!
+    @IBOutlet weak var selectedModelLabel: UILabel!
     
     @IBOutlet weak var computeUnitSegmentedControl: UISegmentedControl!
     
     private var disposeBag = DisposeBag()
     
-    static func instantiate(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol, settingsViewModel: SettingsViewModelProtocol) -> ViewController {
+    static func instantiate(detectionViewModel: DetectionViewModel) -> ViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ViewController
         viewController.detectionViewModel = detectionViewModel
-        viewController.mlModelsViewModel = mlModelsViewModel
-        viewController.settingsViewModel = settingsViewModel
+        //        viewController.mlModelsViewModel = mlModelsViewModel
+        //        viewController.settingsViewModel = settingsViewModel
         return viewController
     }
     
@@ -124,7 +107,7 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                 self.detectionViewModel.stopCaptureSession()
                 
                 let settingsVC = SettingsViewController()
-                settingsVC.prepare(detectionViewModel: detectionViewModel, mlModelsViewModel: mlModelsViewModel, settingsViewModel: settingsViewModel)
+                settingsVC.prepare(detectionViewModel: detectionViewModel)
                 self.navigationController?.pushViewController(settingsVC, animated: true)
                 
                 settingsVC.rx.deallocating.bind { _ in
@@ -134,17 +117,17 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                 
             }.disposed(by: disposeBag)
         
-        detectionViewModel.cameraTypeObservable
-            .subscribe(onNext: { [weak self] type in
-                switch type {
-                case .backFacing:
-                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
-                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(true)
-                case .frontFacing:
-                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
-                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(false)
-                }
-            }).disposed(by: disposeBag)
+        //        detectionViewModel.cameraTypeObservable
+        //            .subscribe(onNext: { [weak self] type in
+        //                switch type {
+        //                case .backFacing:
+        //                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
+        //                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(true)
+        //                case .frontFacing:
+        //                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
+        //                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(false)
+        //                }
+        //            }).disposed(by: disposeBag)
         
         computeUnitSegmentedControl.rx
             .selectedSegmentIndex

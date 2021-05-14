@@ -12,7 +12,8 @@ import RxDataSources
 
 class MLModelSelectionViewController: UIViewController {
     
-    private var mlModelsViewModel: MLModelsViewModelProtocol!
+//    private var mlModelsViewModel: MLModelsViewModelProtocol!
+    private var detectionViewModel: DetectionViewModel!
     private let refreshControl = UIRefreshControl()
     
     // MARK: - Lifecycle Methods
@@ -42,23 +43,24 @@ class MLModelSelectionViewController: UIViewController {
         
     }()
     
-    func prepare(viewModel: MLModelsViewModelProtocol) {
-        self.mlModelsViewModel = viewModel
-        self.mlModelsViewModel.reloadAllMLModels()
+    func prepare(viewModel: DetectionViewModel) {
+        self.detectionViewModel = viewModel
+        self.detectionViewModel.model.reloadAllMLModels()
+//        self.detectionViewModel
     }
 }
 
 // MARK: - Binding
 extension MLModelSelectionViewController {
     func setupBindings() {
-        mlModelsViewModel.mlModelsTableViewSectionObservable
-            .bind(to: tableView.rx.items(dataSource: mlModelsViewModel.dataSource))
+        detectionViewModel.model.mlModelsTableViewSectionObservable
+            .bind(to: tableView.rx.items(dataSource: detectionViewModel.model.dataSource))
             .disposed(by: disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
             .subscribe(onNext: { [weak self] in
                 print("here")
-                self?.mlModelsViewModel.reloadAllMLModels()
+                self?.detectionViewModel.model.reloadAllMLModels()
                 self?.refreshControl.endRefreshing()
 //                self?.tableView.reloadData()
         })
@@ -70,7 +72,7 @@ extension MLModelSelectionViewController {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self = self else { return }
                 
-                self.mlModelsViewModel.combinedMlModelsObservable
+                self.detectionViewModel.model.combinedModelsObservable
                     .subscribe(onNext: { [weak self] value in
                         guard let self = self else { return }
                         var index: Int = indexPath.row
@@ -79,7 +81,7 @@ extension MLModelSelectionViewController {
                             index += self.tableView.numberOfRows(inSection: i)
                         }
                         
-                        self.mlModelsViewModel.selectedMLModel.accept(value[index])
+                        self.detectionViewModel.model.selectedModelRelay.accept(value[index])
                     }).disposed(by: self.disposeBag)
                 
             }).disposed(by: disposeBag)

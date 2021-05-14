@@ -10,6 +10,7 @@
 		6511B138264C446900E09536 /* CVPixelBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6511B137264C446900E09536 /* CVPixelBuffer+Extension.swift */; };
 		6511B13A264C456100E09536 /* CVPixelBufferErrorEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */; };
 		6511B13F264D9A1700E09536 /* yolov5s-original-ane.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */; };
+		652617AA264EEEF8006A45A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652617A9264EEEF8006A45A1 /* BaseViewModel.swift */; };
 		65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */; };
 		777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F60258A26A00020F5C3 /* AppDelegate.swift */; };
 		777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F62258A26A00020F5C3 /* SceneDelegate.swift */; };
@@ -54,6 +55,7 @@
 		6511B137264C446900E09536 /* CVPixelBuffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Extension.swift"; sourceTree = "<group>"; };
 		6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVPixelBufferErrorEnum.swift; sourceTree = "<group>"; };
 		6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "yolov5s-original-ane.mlmodel"; sourceTree = "<group>"; };
+		652617A9264EEEF8006A45A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeUnitEnum.swift; sourceTree = "<group>"; };
 		777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileObjectDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		777D6F60258A26A00020F5C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				777D6F60258A26A00020F5C3 /* AppDelegate.swift */,
 				777D6F62258A26A00020F5C3 /* SceneDelegate.swift */,
 				777D6F75258A27EA0020F5C3 /* AppCoordinator.swift */,
+				652617A9264EEEF8006A45A1 /* BaseViewModel.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				777D6F76258A27EA0020F5C3 /* AppCoordinator.swift in Sources */,
 				9357407425975E6F00910D49 /* YOLOv3Int8LUT.mlmodel in Sources */,
 				931909C0258EA7FE0064DE93 /* StorageSerice.swift in Sources */,
+				652617AA264EEEF8006A45A1 /* BaseViewModel.swift in Sources */,
 				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
 				93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */,
 				93D1C2152590054B00B8B795 /* AVFoundation+Extension.swift in Sources */,

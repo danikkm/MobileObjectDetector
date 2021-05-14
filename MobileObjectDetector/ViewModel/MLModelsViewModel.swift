@@ -10,20 +10,21 @@ import RxSwift
 import RxCocoa
 
 final class MLModelsViewModel: MLModelsViewModelProtocol {
+    
     private (set) var mlModelLoaderService: MLModelLoaderServiceProtocol!
     private (set) var bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
     private (set) var downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
-    private (set) var selectedMLModel = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
+    private (set) var selectedModelRelay = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
     
     private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
-   
+    
     private let disposeBag = DisposeBag()
     
     var downloadedModelsObservable: Observable<[CoreMLModel]> {
         return downloadedModelsRelay.asObservable()
     }
     
-    var bundledMLModelsObservable: Observable<[CoreMLModel]> {
+    var bundledModelsObservable: Observable<[CoreMLModel]> {
         return bundledMlModelsRelay.asObservable()
     }
     
@@ -33,13 +34,17 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
             .observe(on: MainScheduler.instance)
     }
     
-    var combinedMlModelsObservable: Observable<[CoreMLModel]> {
+    var combinedModelsObservable: Observable<[CoreMLModel]> {
         return mlModelsSubject.asObservable()
             .map({ $0.flatMap({ $0.items }) })
     }
     
-    var selectedMLModelDriver: Driver<CoreMLModel> {
-        return selectedMLModel.asDriver(onErrorJustReturn: .init(url: nil, name: "", origin: .bundle))
+    var selectedModelDriver: Driver<CoreMLModel> {
+        return selectedModelRelay.asDriver(onErrorJustReturn: .init(url: nil, name: "", origin: .bundle))
+    }
+    
+    var selectedModel: CoreMLModel {
+        return selectedModelRelay.value
     }
     
     var dataSource = MLModelSelectionDataSource.dataSource()
@@ -70,7 +75,7 @@ extension MLModelsViewModel {
     private func populateTableViewSection() {
         var tableViewSections: [TableViewSection] = []
         
-        bundledMLModelsObservable.subscribe(onNext: { mlModels in
+        bundledModelsObservable.subscribe(onNext: { mlModels in
             tableViewSections.append(TableViewSection(items: mlModels, header: "Bundled models"))
             
         }).disposed(by: disposeBag)
@@ -85,11 +90,11 @@ extension MLModelsViewModel {
     }
     
     private func setInitialMlModel() {
-        combinedMlModelsObservable.subscribe(onNext: { [weak self] coreMLModel in
+        combinedModelsObservable.subscribe(onNext: { [weak self] coreMLModel in
             guard let self = self,
                   let firstItem = coreMLModel[safe: 0] else { return }
             
-            self.selectedMLModel.accept(firstItem)
+            self.selectedModelRelay.accept(firstItem)
         }).disposed(by: disposeBag)
     }
 }
