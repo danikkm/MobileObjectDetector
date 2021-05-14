@@ -122,11 +122,16 @@ class ObjectRecognitionViewController: ViewController {
         let error: NSError! = nil
         
         do {
-            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: url))
-            print("Using: \(nameOfTheModel)")
-            let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { [weak self] request, error in
-                DispatchQueue.main.async(execute: {
-                    // perform all the UI updates on the main queue
+            let config = MLModelConfiguration()
+            config.computeUnits = .all
+            
+            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: url, configuration: config))
+            
+            print("Using: \(nameOfTheModel), running on \(config.computeUnits.rawValue)")
+            
+            let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
+                let startTime = CACurrentMediaTime()
+                DispatchQueue.main.async {
                     if let results = request.results {
                         self?.drawVisionRequestResults(results)
                     }
@@ -134,9 +139,11 @@ class ObjectRecognitionViewController: ViewController {
                     if let error = error {
                         print(error.localizedDescription)
                     }
-                    
-                })
-            })
+                }
+                let endTime = CACurrentMediaTime()
+                print("Done inference in: \(endTime - startTime))")
+            }
+            
             self.requests = [objectRecognition]
         }
         catch let error as NSError {
@@ -149,8 +156,11 @@ class ObjectRecognitionViewController: ViewController {
     func drawVisionRequestResults(_ results: [Any]) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+        
         guard detectionOverlay != nil else { return }
+        
         detectionOverlay.sublayers = nil // remove all the old recognized objects
+        
         for observation in results where observation is VNRecognizedObjectObservation {
             guard let objectObservation = observation as? VNRecognizedObjectObservation else {
                 continue
@@ -159,33 +169,40 @@ class ObjectRecognitionViewController: ViewController {
             let topLabelObservation = objectObservation.labels[0]
             let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(detectionViewModel.bufferSize.width), Int(detectionViewModel.bufferSize.height))
             
-            let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
+            let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
             
-            let textLayer = self.createTextSubLayerInBounds(objectBounds,
+            let textLayer = createTextSubLayerInBounds(objectBounds,
                                                             identifier: topLabelObservation.identifier,
                                                             confidence: topLabelObservation.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
         }
-        self.updateLayerGeometry()
+        
+        updateLayerGeometry()
+        
         CATransaction.commit()
     }
     
-    override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    override func captureOutput(_ output: AVCaptureOutput,
+                                didOutput sampleBuffer: CMSampleBuffer,
+                                from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
         
         var options: [VNImageOption : Any] = [:]
-        if let cameraIntrinsicMatrix = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
+        if let cameraIntrinsicMatrix = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix,
+                                                       attachmentModeOut: nil) {
             options[.cameraIntrinsics] = cameraIntrinsicMatrix
         }
         
         let exifOrientation = exifOrientationFromDeviceOrientation()
+
         autoreleasepool {
             var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
-            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!, orientation: exifOrientation, options: options)
-            
+            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!,
+                                                            orientation: exifOrientation,
+                                                            options: options)
             do {
                 try imageRequestHandler.perform(self.requests)
             } catch {

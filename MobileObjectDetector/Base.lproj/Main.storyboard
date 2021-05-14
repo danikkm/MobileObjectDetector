@@ -39,6 +39,14 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="gMH-0z-YI6">
+                                <rect key="frame" x="65" y="96" width="284" height="32"/>
+                                <segments>
+                                    <segment title="ANE"/>
+                                    <segment title="GPU"/>
+                                    <segment title="CPU"/>
+                                </segments>
+                            </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -48,12 +56,16 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BsQ-wi-k9r" secondAttribute="bottom" constant="72" id="DCI-cs-qUX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
                             <constraint firstItem="pHJ-b2-Uyx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ab1-q4-ZLj"/>
+                            <constraint firstItem="gMH-0z-YI6" firstAttribute="top" secondItem="RwP-GF-DJs" secondAttribute="bottom" constant="8" id="gio-pp-aaX"/>
+                            <constraint firstItem="gMH-0z-YI6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="65" id="hc7-C0-4Z8"/>
                             <constraint firstItem="RwP-GF-DJs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="lU0-zv-LrR"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="gMH-0z-YI6" secondAttribute="trailing" constant="65" id="qxX-ui-FvS"/>
                             <constraint firstItem="BsQ-wi-k9r" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="96" id="tQN-WM-kN3"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="actionButton" destination="BsQ-wi-k9r" id="LOi-Pu-XQz"/>
+                        <outlet property="computeUnitSegmentedControl" destination="gMH-0z-YI6" id="raG-Wd-qgX"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="3SC-hN-o6K"/>
                         <outlet property="selectedModelLabel" destination="RwP-GF-DJs" id="40T-Ht-0Jc"/>
                         <outlet property="settingsMenuButton" destination="pHJ-b2-Uyx" id="fmf-za-7wI"/>

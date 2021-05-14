@@ -45,6 +45,8 @@ class ViewController: UIViewController, DetectionViewModelEvents {
         }
     }
     
+    @IBOutlet weak var computeUnitSegmentedControl: UISegmentedControl!
+    
     private var disposeBag = DisposeBag()
     
     static func instantiate(detectionViewModel: DetectionViewModelProtocol, mlModelsViewModel: MLModelsViewModelProtocol, settingsViewModel: SettingsViewModelProtocol) -> ViewController {
@@ -142,6 +144,14 @@ class ViewController: UIViewController, DetectionViewModelEvents {
                     self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
                     self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(false)
                 }
+            }).disposed(by: disposeBag)
+        
+        computeUnitSegmentedControl.rx
+            .selectedSegmentIndex
+            .subscribe(onNext: { index in
+                let selectedMode = ComputeUnit(rawValue: index) ?? .ane
+                
+                print(selectedMode)
             }).disposed(by: disposeBag)
     }
     
