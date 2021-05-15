@@ -87,7 +87,7 @@ extension ObjectRecognitionViewController {
         detectionViewModel.startCaptureSession()
     }
     
-    func drawVisionRequestResults(_ results: [Any]) {
+    func drawVisionRequestResults(_ observations: [VNRecognizedObjectObservation]) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         
@@ -95,19 +95,19 @@ extension ObjectRecognitionViewController {
         
         detectionOverlay.sublayers = nil // remove all the old recognized objects
         
-        for observation in results where observation is VNRecognizedObjectObservation {
-            guard let objectObservation = observation as? VNRecognizedObjectObservation else {
+        for observation in observations {
+            // Select only the label with the highest confidence.
+            guard let topLabel = observation.labels.first else {
+                print("Object observation has no labels")
                 continue
             }
-            // Select only the label with the highest confidence.
-            let topLabelObservation = objectObservation.labels[0]
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(detectionViewModel.bufferSize.width), Int(detectionViewModel.bufferSize.height))
+            let objectBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(detectionViewModel.bufferSize.width), Int(detectionViewModel.bufferSize.height))
             
             let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
             
             let textLayer = createTextSubLayerInBounds(objectBounds,
-                                                       identifier: topLabelObservation.identifier,
-                                                       confidence: topLabelObservation.confidence)
+                                                       identifier: topLabel.identifier,
+                                                       confidence: topLabel.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
         }
@@ -172,7 +172,7 @@ extension ObjectRecognitionViewController {
         let textLayer = CATextLayer()
         textLayer.name = "Object Label"
         
-        let confidenceFormatted = String(format: ": %.2f", confidence * 100)
+        let confidenceFormatted = String(format: ": %.1f", confidence * 100)
         textLayer.fontSize = 21
         textLayer.string = "\(identifier)\(confidenceFormatted)"
         textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height - 10, height: bounds.size.width - 10)
@@ -192,9 +192,9 @@ extension ObjectRecognitionViewController {
         shapeLayer.bounds = bounds
         shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
         shapeLayer.name = "Found Object"
-        shapeLayer.borderColor = CGColor.SystemItem.cyan
-        shapeLayer.borderWidth = 4.0
-        shapeLayer.cornerRadius = 7
+        shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [0.0, 0.8, 1.0, 0.6])
+        shapeLayer.borderWidth = 2.0
+        shapeLayer.cornerRadius = 14
         return shapeLayer
     }
 }

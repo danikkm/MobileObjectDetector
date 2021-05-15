@@ -12,7 +12,7 @@ import AVFoundation
 import Vision
 
 protocol DetectionViewModelEvents: AnyObject {
-    func drawVisionRequestResults(_ results: [Any])
+    func drawVisionRequestResults(_ observations: [VNRecognizedObjectObservation])
     func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation
 }
 
@@ -27,7 +27,7 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     private var deviceInput: AVCaptureDeviceInput!
     private var capturePreset: AVCaptureSession.Preset! = nil
     private let videoDataOutput = AVCaptureVideoDataOutput()
-    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
+    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .inherit)
     private var videoDevice: AVCaptureDevice!
     
     // MARK: - Private Reactive Properties
@@ -147,21 +147,9 @@ extension DetectionViewModel {
         print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
         
         let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
-            guard let results = request.results as? [VNRecognizedObjectObservation],
-                  let _ = results.first else {
-                return
-            }
-            
-            DispatchQueue.main.async { [weak self] in 
-                if let results = request.results {
-                    self?.delegate?.drawVisionRequestResults(results)
-                }
-                
-                if let _error = error {
-                    print(_error.localizedDescription)
-                }
-            }
+            self?.detectionRequestHandler(request: request, error: error)
         }
+        objectRecognition.imageCropAndScaleOption = .scaleFit
         requests = [objectRecognition]
     }
     
@@ -235,36 +223,6 @@ extension DetectionViewModel {
         }
     }
     
-    public func cleanup() {
-        requests = []
-    }
-}
-
-// MARK: - Private methods
-extension DetectionViewModel {
-    // TODO: Add support for other devices!
-    private func addVideoInput(deviceType: AVCaptureDevice.DeviceType,
-                               position: AVCaptureDevice.Position) {
-        guard let device: AVCaptureDevice = AVCaptureDevice.default(deviceType,
-                                                                    for: .video,
-                                                                    position: position) else { return }
-        videoDevice = device
-        
-        if let currentInput = deviceInput {
-            session.removeInput(currentInput)
-            deviceInput = nil
-        }
-        do {
-            let input = try AVCaptureDeviceInput(device: videoDevice)
-            if session.canAddInput(input) {
-                session.addInput(input)
-                deviceInput = input
-            }
-        } catch {
-            print(error)
-        }
-    }
-    
     func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
@@ -294,6 +252,63 @@ extension DetectionViewModel {
                 print(error)
             }
             clonePixelBuffer = nil
+        }
+    }
+    
+    public func cleanup() {
+//        requests = [] // TODO: is it needed 
+        delegate?.drawVisionRequestResults([])
+    }
+}
+
+// MARK: - Private methods
+extension DetectionViewModel {
+    // TODO: Add support for other devices!
+    private func addVideoInput(deviceType: AVCaptureDevice.DeviceType,
+                               position: AVCaptureDevice.Position) {
+        guard let device: AVCaptureDevice = AVCaptureDevice.default(deviceType,
+                                                                    for: .video,
+                                                                    position: position) else { return }
+        videoDevice = device
+        
+        if let currentInput = deviceInput {
+            session.removeInput(currentInput)
+            deviceInput = nil
+        }
+        do {
+            let input = try AVCaptureDeviceInput(device: videoDevice)
+            if session.canAddInput(input) {
+                session.addInput(input)
+                deviceInput = input
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func detectionRequestHandler(request: VNRequest, error: Error?) {
+        if let _error = error {
+            print("An error occurred with the vision request: \(_error.localizedDescription)")
+            return
+        }
+        guard let request = request as? VNCoreMLRequest else {
+            print("Vision request is not a VNCoreMLRequest")
+            return
+        }
+        
+        guard let observations = request.results as? [VNRecognizedObjectObservation],
+              let _ = observations.first else {
+            print("Request did not return recognized objects: \(request.results?.debugDescription ?? "[No results]")")
+            return
+        }
+        
+        guard !observations.isEmpty else {
+            cleanup()
+            return
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.drawVisionRequestResults(observations)
         }
     }
 }
