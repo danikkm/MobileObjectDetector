@@ -13,6 +13,7 @@ import Vision
 
 protocol DetectionViewModelEvents: AnyObject {
     func drawVisionRequestResults(_ results: [Any])
+    func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation
 }
 
 final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, DetectionViewModelProtocol {
@@ -22,7 +23,7 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, Detect
     private (set) var requests = [VNRequest]()
     
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
-    private (set) var detectionStateRelay = PublishRelay<DetectionState>()
+    private let detectionStateRelay = BehaviorRelay<DetectionState>(value: .inactive)
     private let coreMLModel = PublishSubject<VNCoreMLModel>()
     
     private (set) var session = AVCaptureSession()
@@ -43,6 +44,10 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, Detect
         return detectionStateRelay.asDriver(onErrorJustReturn: .inactive).debug()
     }
     
+    var detectionState: DetectionState {
+        return detectionStateRelay.value
+    }
+    
     var frameRateObservable: Observable<Double> {
         return frameRateRelay.asObservable().debug()
     }
@@ -55,13 +60,13 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, Detect
         return model.selectedModel
     }
     
-    private lazy var mlModelConfig: MLModelConfiguration = {
+    private var mlModelConfig: MLModelConfiguration {
         let config = MLModelConfiguration()
         config.computeUnits = .all
         return config
-    }()
+    }
     
-    private lazy var mlModel: MLModel = {
+    private var mlModel: MLModel {
         guard let url = selectedModel.url else {
             fatalError("Invalid URL for the mlmodel")
         }
@@ -71,15 +76,15 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, Detect
         } catch {
             fatalError("Failed to create VNCoreMLModel: \(error)")
         }
-    }()
+    }
     
-    private lazy var visionModel: VNCoreMLModel = {
+    private var visionModel: VNCoreMLModel {
         do {
             return try VNCoreMLModel(for: mlModel)
         } catch {
             fatalError("Failed to create VNCoreMLModel: \(error)")
         }
-    }()
+    }
     
     func setRequests(_ requests: [VNRequest]) {
         self.requests = requests
@@ -132,7 +137,6 @@ extension DetectionViewModel {
     
     func setupVision() {
         print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
-        
         let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
             guard let results = request.results as? [VNRecognizedObjectObservation],
                   let _ = results.first else {
@@ -149,7 +153,6 @@ extension DetectionViewModel {
                 }
             }
         }
-        
         setRequests([objectRecognition])
     }
     
@@ -193,6 +196,13 @@ extension DetectionViewModel {
     }
 }
 
+// MARK: - Public Interface
+extension DetectionViewModel {
+    public func setDetectionState(to state: DetectionState) {
+        self.detectionStateRelay.accept(state)
+    }
+}
+
 // MARK: - Private methods
 extension DetectionViewModel {
     private func addVideoInput(position: AVCaptureDevice.Position) {
@@ -213,6 +223,38 @@ extension DetectionViewModel {
             }
         } catch {
             print(error)
+        }
+    }
+    
+    func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+        
+        var options: [VNImageOption : Any] = [:]
+        if let cameraIntrinsicMatrix = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix,
+                                                       attachmentModeOut: nil) {
+            options[.cameraIntrinsics] = cameraIntrinsicMatrix
+        }
+        
+        
+        guard let exifOrientation = delegate?.exifOrientationFromDeviceOrientation() else {
+            print("Failed to obtain device orientation")
+            return
+        }
+        
+        autoreleasepool {
+            var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
+            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!,
+                                                            orientation: exifOrientation,
+                                                            options: options)
+            do {
+                try imageRequestHandler.perform(requests)
+            } catch {
+                self.delegate?.drawVisionRequestResults([])
+                print(error.localizedDescription)
+            }
+            clonePixelBuffer = nil
         }
     }
 }

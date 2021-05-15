@@ -28,6 +28,8 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     
     // MARK: - Properties
     private var detectionViewModel: DetectionViewModel!
+
+    // MARK: - Reactive Properties
     private var disposeBag = DisposeBag()
     
     // MARK: - Lifecycle Methods
@@ -215,11 +217,11 @@ extension ObjectRecognitionViewController {
                     self.actionButton.setTitleColor(.black, for: .selected)
                     self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.stop
-                    self.detectionViewModel.detectionStateRelay.accept(.active)
+                    self.detectionViewModel.setDetectionState(to: .active)
                 } else {
                     self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.start
-                    self.detectionViewModel.detectionStateRelay.accept(.inactive)
+                    self.detectionViewModel.setDetectionState(to: .inactive)
                 }
                 
             }.disposed(by: disposeBag)
@@ -275,8 +277,9 @@ extension ObjectRecognitionViewController {
                     }
                 case .inactive:
                     self.detectionViewModel.setRequests([])
-                    self.detectionOverlay.removeFromSuperlayer()
-                    print("inactive")
+                    if self.detectionOverlay != nil {
+                        self.detectionOverlay.removeFromSuperlayer()
+                    }
                 }
             }).disposed(by: disposeBag)
         
@@ -338,30 +341,11 @@ extension ObjectRecognitionViewController: AVCaptureVideoDataOutputSampleBufferD
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-        
-        var options: [VNImageOption : Any] = [:]
-        if let cameraIntrinsicMatrix = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix,
-                                                       attachmentModeOut: nil) {
-            options[.cameraIntrinsics] = cameraIntrinsicMatrix
-        }
-        
-        let exifOrientation = exifOrientationFromDeviceOrientation()
-        
-        autoreleasepool {
-            var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
-            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!,
-                                                            orientation: exifOrientation,
-                                                            options: options)
-            do {
-                try imageRequestHandler.perform(detectionViewModel.requests)
-            } catch {
-                //                drawVisionRequestResults([])
-                print(error.localizedDescription)
-            }
-            clonePixelBuffer = nil
+        switch detectionViewModel.detectionState {
+        case .active:
+            self.detectionViewModel.predictWithPixelBuffer(sampleBuffer: sampleBuffer)
+        case .inactive:
+            break
         }
     }
     
