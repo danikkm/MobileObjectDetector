@@ -11,17 +11,18 @@ import AVFoundation
 import Vision
 
 protocol DetectionViewModelProtocol: AnyObject {
-    var requests: [VNRequest] { get }
-    var cameraType: CameraType { get }
     var session: AVCaptureSession { get }
     var bufferSize: CGSize { get }
+    
     var frameRateRelay: PublishRelay<Double> { get }
-    var detectionStateDriver: Driver<DetectionState> { get }
+    
+    var cameraType: CameraType { get }
     var detectionState: DetectionState { get }
+    var selectedModel: CoreMLModel { get }
+    
+    var detectionStateDriver: Driver<DetectionState> { get }
     var frameRateObservable: Observable<Double> { get }
     var cameraTypeObservable: Observable<CameraType> { get }
-    
-    var selectedModel: CoreMLModel { get }
     
     func configure(delegate: DetectionViewModelEvents)
     func stopCaptureSession()
@@ -31,7 +32,8 @@ protocol DetectionViewModelProtocol: AnyObject {
     func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer)
     func switchCamera()
     func changeFrameRate(to frameRate: Double)
-    func setDetectionState(to state: DetectionState)
     
-    func setRequests(_ requests: [VNRequest]) 
+    func setDetectionState(to state: DetectionState)
+    func setComputeUnit(to computeUnit: ComputeUnit)
+    func cleanup()
 }

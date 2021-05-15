@@ -218,10 +218,12 @@ extension ObjectRecognitionViewController {
                     self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.stop
                     self.detectionViewModel.setDetectionState(to: .active)
+                    self.computeUnitSegmentedControl.isEnabled.toggle()
                 } else {
                     self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
                     self.actionButton.backgroundColor = UIColor.Button.start
                     self.detectionViewModel.setDetectionState(to: .inactive)
+                    self.computeUnitSegmentedControl.isEnabled.toggle()
                 }
                 
             }.disposed(by: disposeBag)
@@ -256,10 +258,10 @@ extension ObjectRecognitionViewController {
         
         computeUnitSegmentedControl.rx
             .selectedSegmentIndex
-            .subscribe(onNext: { index in
-                let selectedMode = ComputeUnit(rawValue: index) ?? .ane
-                
-                print(selectedMode)
+            .skip(1)
+            .bind(onNext: { [weak self] index in
+                let computeUnit = ComputeUnit(rawValue: index) ?? .ane
+                self?.detectionViewModel.setComputeUnit(to: computeUnit)
             }).disposed(by: disposeBag)
         
         detectionViewModel.detectionStateDriver
@@ -276,7 +278,7 @@ extension ObjectRecognitionViewController {
                         self.detectionViewModel.setupVision()
                     }
                 case .inactive:
-                    self.detectionViewModel.setRequests([])
+                    self.detectionViewModel.cleanup()
                     if self.detectionOverlay != nil {
                         self.detectionOverlay.removeFromSuperlayer()
                     }
