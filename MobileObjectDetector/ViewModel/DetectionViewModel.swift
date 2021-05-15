@@ -107,7 +107,7 @@ extension DetectionViewModel {
     }
     
     func prepareAVCapture() {
-        addVideoInput(position: .back)
+        addVideoInput(deviceType: .builtInDualWideCamera, position: .back)
         
         session.beginConfiguration()
         session.sessionPreset = capturePreset ?? .vga640x480 // Model image size is smaller.
@@ -169,11 +169,11 @@ extension DetectionViewModel {
         switch cameraType {
         case .frontFacing:
             cameraTypeRelay.accept(.backFacing)
-            addVideoInput(position: .back)
+            addVideoInput(deviceType: .builtInDualWideCamera, position: .back)
             videoDevice.set(frameRate: 60.0)
         case .backFacing:
             cameraTypeRelay.accept(.frontFacing)
-            addVideoInput(position: .front)
+            addVideoInput(deviceType: .builtInWideAngleCamera, position: .front)
             videoDevice.set(frameRate: 30.0)
         }
         
@@ -208,23 +208,44 @@ extension DetectionViewModel {
 // MARK: - Public Interface
 extension DetectionViewModel {
     public func setDetectionState(to state: DetectionState) {
-        self.detectionStateRelay.accept(state)
+        detectionStateRelay.accept(state)
     }
     
     public func setComputeUnit(to computeUnit: ComputeUnit) {
         computeUnitRelay.accept(computeUnit)
     }
     
+    public func changeZoomFactor() {
+        var zoomFactor: CGFloat = 1.0
+        
+        switch videoDevice.deviceType {
+        case .builtInDualWideCamera where videoDevice.videoZoomFactor == 1.0:
+            zoomFactor = 2.0
+        case .builtInDualWideCamera where videoDevice.videoZoomFactor == 2.0:
+            zoomFactor = 1.0
+        default:
+            break
+        }
+        do {
+            try videoDevice.lockForConfiguration()
+            videoDevice.videoZoomFactor = zoomFactor
+            videoDevice.unlockForConfiguration()
+        } catch {
+            print(error)
+        }
+    }
+    
     public func cleanup() {
         requests = []
-        
     }
 }
 
 // MARK: - Private methods
 extension DetectionViewModel {
-    private func addVideoInput(position: AVCaptureDevice.Position) {
-        guard let device: AVCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
+    // TODO: Add support for other devices!
+    private func addVideoInput(deviceType: AVCaptureDevice.DeviceType,
+                               position: AVCaptureDevice.Position) {
+        guard let device: AVCaptureDevice = AVCaptureDevice.default(deviceType,
                                                                     for: .video,
                                                                     position: position) else { return }
         videoDevice = device

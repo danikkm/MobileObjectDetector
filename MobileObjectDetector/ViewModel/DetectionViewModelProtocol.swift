@@ -35,5 +35,6 @@ protocol DetectionViewModelProtocol: AnyObject {
     
     func setDetectionState(to state: DetectionState)
     func setComputeUnit(to computeUnit: ComputeUnit)
+    func changeZoomFactor()
     func cleanup()
 }

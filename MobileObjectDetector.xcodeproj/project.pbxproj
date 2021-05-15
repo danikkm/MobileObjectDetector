@@ -134,8 +134,6 @@
 				93F5F656258D2BF000A4B172 /* ViewModel */,
 				931909BE258EA7EF0064DE93 /* Services */,
 				93F362FA258F639B0090BE16 /* MLModels */,
-				777D6F66258A26A00020F5C3 /* Main.storyboard */,
-				777D6F6B258A26A20020F5C3 /* LaunchScreen.storyboard */,
 				777D6F69258A26A20020F5C3 /* Assets.xcassets */,
 				777D6F6E258A26A20020F5C3 /* Info.plist */,
 			);
@@ -234,6 +232,8 @@
 				938126422592820F003C31CB /* Settings */,
 				93A96D1A258F81C6004E6964 /* MLModelSelection */,
 				777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */,
+				777D6F66258A26A00020F5C3 /* Main.storyboard */,
+				777D6F6B258A26A20020F5C3 /* LaunchScreen.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";

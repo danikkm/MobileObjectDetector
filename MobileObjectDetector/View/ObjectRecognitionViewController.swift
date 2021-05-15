@@ -25,6 +25,7 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     @IBOutlet weak private var settingsMenuButton: UIButton!
     @IBOutlet weak var selectedModelLabel: UILabel!
     @IBOutlet weak var computeUnitSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var zoomFactorButton: UIButton!
     
     // MARK: - Properties
     private var detectionViewModel: DetectionViewModel!
@@ -55,6 +56,7 @@ extension ObjectRecognitionViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let viewController = storyboard.instantiateInitialViewController() as! ObjectRecognitionViewController
         viewController.detectionViewModel = detectionViewModel
+        
         return viewController
     }
     
@@ -127,6 +129,9 @@ extension ObjectRecognitionViewController {
         
         blurView.frame = view.bounds
         blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        zoomFactorButton.layer.masksToBounds = true
+        zoomFactorButton.layer.cornerRadius = zoomFactorButton.frame.size.width / 2
     }
     
     private func setupLayers() {
@@ -203,6 +208,8 @@ extension ObjectRecognitionViewController {
         .when(.recognized)
         .subscribe(onNext: { [weak self] _ in
             self?.detectionViewModel.switchCamera()
+            self?.zoomFactorButton.isEnabled.toggle()
+            self?.zoomFactorButton.isEnabled == false ? ( self?.zoomFactorButton.alpha = 0.5) :  (self?.zoomFactorButton.alpha = 1.0)
         })
         .disposed(by: disposeBag)
         
@@ -262,6 +269,11 @@ extension ObjectRecognitionViewController {
             .bind(onNext: { [weak self] index in
                 let computeUnit = ComputeUnit(rawValue: index) ?? .ane
                 self?.detectionViewModel.setComputeUnit(to: computeUnit)
+            }).disposed(by: disposeBag)
+        
+        zoomFactorButton.rx.tap
+            .bind(onNext: { [unowned self] _ in
+                self.detectionViewModel.changeZoomFactor()
             }).disposed(by: disposeBag)
         
         detectionViewModel.detectionStateDriver
