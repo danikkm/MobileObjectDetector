@@ -14,7 +14,6 @@
 		65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */; };
 		777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F60258A26A00020F5C3 /* AppDelegate.swift */; };
 		777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F62258A26A00020F5C3 /* SceneDelegate.swift */; };
-		777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F64258A26A00020F5C3 /* ViewController.swift */; };
 		777D6F68258A26A00020F5C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 777D6F66258A26A00020F5C3 /* Main.storyboard */; };
 		777D6F6A258A26A20020F5C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 777D6F69258A26A20020F5C3 /* Assets.xcassets */; };
 		777D6F6D258A26A20020F5C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 777D6F6B258A26A20020F5C3 /* LaunchScreen.storyboard */; };
@@ -60,7 +59,6 @@
 		777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileObjectDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		777D6F60258A26A00020F5C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		777D6F62258A26A00020F5C3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		777D6F64258A26A00020F5C3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		777D6F67258A26A00020F5C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		777D6F69258A26A20020F5C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		777D6F6C258A26A20020F5C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -235,7 +233,6 @@
 			children = (
 				938126422592820F003C31CB /* Settings */,
 				93A96D1A258F81C6004E6964 /* MLModelSelection */,
-				777D6F64258A26A00020F5C3 /* ViewController.swift */,
 				777D6F7A258A2F110020F5C3 /* ObjectRecognitionViewController.swift */,
 			);
 			path = View;
@@ -359,7 +356,6 @@
 				9357407425975E6F00910D49 /* YOLOv3Int8LUT.mlmodel in Sources */,
 				931909C0258EA7FE0064DE93 /* StorageSerice.swift in Sources */,
 				652617AA264EEEF8006A45A1 /* BaseViewModel.swift in Sources */,
-				777D6F65258A26A00020F5C3 /* ViewController.swift in Sources */,
 				93A96D22258F82EB004E6964 /* MLModelItemViewModel.swift in Sources */,
 				93D1C2152590054B00B8B795 /* AVFoundation+Extension.swift in Sources */,
 				93A96D1F258F8262004E6964 /* MLModelSelectionTableViewCell.swift in Sources */,

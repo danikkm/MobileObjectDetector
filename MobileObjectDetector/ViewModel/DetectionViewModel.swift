@@ -15,9 +15,7 @@ protocol DetectionViewModelEvents: AnyObject {}
 
 final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, DetectionViewModelProtocol {
     
-    private weak var delegate: DetectionViewModelEvents?
-    
-    //    private (set) var modelViewModel: MLModelsViewModelProtocol
+    weak var delegate: DetectionViewModelEvents?
     
     private (set) var requests = [VNRequest]()
     
@@ -85,7 +83,7 @@ extension DetectionViewModel {
             // Add a video data output
             videoDataOutput.alwaysDiscardsLateVideoFrames = true
             videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-            videoDataOutput.setSampleBufferDelegate(delegate as? ViewController, queue: videoDataOutputQueue)
+            videoDataOutput.setSampleBufferDelegate(delegate as? ObjectRecognitionViewController, queue: videoDataOutputQueue)
         } else {
             print("Could not add video data output to the session")
             session.commitConfiguration()

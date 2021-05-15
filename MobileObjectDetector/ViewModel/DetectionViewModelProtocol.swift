@@ -10,7 +10,7 @@ import RxCocoa
 import AVFoundation
 import Vision
 
-protocol DetectionViewModelProtocol {
+protocol DetectionViewModelProtocol: AnyObject {
     var requests: [VNRequest] { get }
     var cameraType: CameraType { get }
     var detectionStateRelay: PublishRelay<DetectionState> { get }
