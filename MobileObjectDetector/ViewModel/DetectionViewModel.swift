@@ -11,7 +11,9 @@ import RxCocoa
 import AVFoundation
 import Vision
 
-protocol DetectionViewModelEvents: AnyObject {}
+protocol DetectionViewModelEvents: AnyObject {
+    func drawVisionRequestResults(_ results: [Any])
+}
 
 final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, DetectionViewModelProtocol {
     
@@ -52,13 +54,32 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>, Detect
     var selectedModel: CoreMLModel {
         return model.selectedModel
     }
-    //    lazy var visionModel: VNCoreMLModel = {
-    //      do {
-    //        return try VNCoreMLModel(for: coreMLModel.model)
-    //      } catch {
-    //        fatalError("Failed to create VNCoreMLModel: \(error)")
-    //      }
-    //    }()
+    
+    private lazy var mlModelConfig: MLModelConfiguration = {
+        let config = MLModelConfiguration()
+        config.computeUnits = .all
+        return config
+    }()
+    
+    private lazy var mlModel: MLModel = {
+        guard let url = selectedModel.url else {
+            fatalError("Invalid URL for the mlmodel")
+        }
+        
+        do {
+            return try MLModel(contentsOf: url, configuration: mlModelConfig)
+        } catch {
+            fatalError("Failed to create VNCoreMLModel: \(error)")
+        }
+    }()
+    
+    private lazy var visionModel: VNCoreMLModel = {
+        do {
+            return try VNCoreMLModel(for: mlModel)
+        } catch {
+            fatalError("Failed to create VNCoreMLModel: \(error)")
+        }
+    }()
     
     func setRequests(_ requests: [VNRequest]) {
         self.requests = requests
@@ -107,6 +128,29 @@ extension DetectionViewModel {
         }
         
         session.commitConfiguration()
+    }
+    
+    func setupVision() {
+        print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
+        
+        let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
+            guard let results = request.results as? [VNRecognizedObjectObservation],
+                  let _ = results.first else {
+                return
+            }
+            
+            DispatchQueue.main.async { [weak self] in 
+                if let results = request.results {
+                    self?.delegate?.drawVisionRequestResults(results)
+                }
+                
+                if let _error = error {
+                    print(_error.localizedDescription)
+                }
+            }
+        }
+        
+        setRequests([objectRecognition])
     }
     
     func switchCamera() {

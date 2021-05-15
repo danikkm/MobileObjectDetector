@@ -82,37 +82,6 @@ extension ObjectRecognitionViewController {
         
         detectionViewModel.startCaptureSession()
     }
-
-    func setupVision(withURL url: URL, nameOfTheModel: String) {
-        do {
-            let config = MLModelConfiguration()
-            config.computeUnits = .all
-            
-            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: url, configuration: config))
-            
-            print("Using: \(nameOfTheModel), running on \(config.computeUnits.rawValue)")
-            
-            let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
-                //                let startTime = CACurrentMediaTime()
-                DispatchQueue.main.async {
-                    if let results = request.results {
-                        self?.drawVisionRequestResults(results)
-                    }
-                    
-                    if let _error = error {
-                        print(_error.localizedDescription)
-                    }
-                }
-                //                let endTime = CACurrentMediaTime()
-                //                print("Done inference in: \(endTime - startTime))")
-            }
-            
-            detectionViewModel.setRequests([objectRecognition])
-        }
-        catch let error as NSError {
-            print("Model loading went wrong: \(error)")
-        }
-    }
     
     func drawVisionRequestResults(_ results: [Any]) {
         CATransaction.begin()
@@ -301,20 +270,10 @@ extension ObjectRecognitionViewController {
                     self.setupLayers()
                     self.updateLayerGeometry()
                     
-                    guard let url = self.detectionViewModel.selectedModel.url else {
-                        print("Invalid URL for the mlmodel")
-                        return
-                    }
-                    
                     DispatchQueue.global(qos: .userInitiated).async {
-                        // TODO: refactor to view model
-                        self.setupVision(withURL: url, nameOfTheModel: self.detectionViewModel.selectedModel.name)
+                        self.detectionViewModel.setupVision()
                     }
-                    
-                    self.setupVision(withURL: url,
-                                     nameOfTheModel: self.detectionViewModel.selectedModel.name)
                 case .inactive:
-                    // TODO: is it necessary?
                     self.detectionViewModel.setRequests([])
                     self.detectionOverlay.removeFromSuperlayer()
                     print("inactive")
@@ -399,8 +358,8 @@ extension ObjectRecognitionViewController: AVCaptureVideoDataOutputSampleBufferD
             do {
                 try imageRequestHandler.perform(detectionViewModel.requests)
             } catch {
-                drawVisionRequestResults([])
-                print(error)
+                //                drawVisionRequestResults([])
+                print(error.localizedDescription)
             }
             clonePixelBuffer = nil
         }

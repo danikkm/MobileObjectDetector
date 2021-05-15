@@ -27,6 +27,7 @@ protocol DetectionViewModelProtocol: AnyObject {
     func stopCaptureSession()
     func startCaptureSession()
     func prepareAVCapture()
+    func setupVision()
     func switchCamera()
     func changeFrameRate(to frameRate: Double)
     
