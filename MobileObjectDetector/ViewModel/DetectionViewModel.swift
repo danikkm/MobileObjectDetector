@@ -145,6 +145,7 @@ extension DetectionViewModel {
     
     func setupVision() {
         print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
+        visionModel.featureProvider = ThresholdProvider()
         
         let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
             self?.detectionRequestHandler(request: request, error: error)
@@ -240,13 +241,18 @@ extension DetectionViewModel {
             return
         }
         
-        autoreleasepool {
+        autoreleasepool { [weak self] in
+            guard let self = self else { return }
+            
             var clonePixelBuffer: CVPixelBuffer? = try? pixelBuffer.copy()
             let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: clonePixelBuffer!,
                                                             orientation: exifOrientation,
                                                             options: options)
             do {
-                try imageRequestHandler.perform(requests)
+                let startTime = CACurrentMediaTime()
+                try imageRequestHandler.perform(self.requests)
+                let endTime = CACurrentMediaTime()
+                print(String(format: "Inference (ms): %.3f", (endTime - startTime) * 1000))
             } catch {
                 self.delegate?.drawVisionRequestResults([])
                 print(error)
@@ -256,7 +262,7 @@ extension DetectionViewModel {
     }
     
     public func cleanup() {
-//        requests = [] // TODO: is it needed 
+        //        requests = [] // TODO: is it needed
         delegate?.drawVisionRequestResults([])
     }
 }

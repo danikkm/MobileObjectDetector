@@ -11,6 +11,7 @@
 		6511B13A264C456100E09536 /* CVPixelBufferErrorEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */; };
 		6511B13F264D9A1700E09536 /* yolov5s-original-ane.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */; };
 		652617AA264EEEF8006A45A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652617A9264EEEF8006A45A1 /* BaseViewModel.swift */; };
+		6590F3292650789B0008A06F /* ThresholdProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6590F3282650789B0008A06F /* ThresholdProvider.swift */; };
 		65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */; };
 		777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F60258A26A00020F5C3 /* AppDelegate.swift */; };
 		777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F62258A26A00020F5C3 /* SceneDelegate.swift */; };
@@ -55,6 +56,7 @@
 		6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVPixelBufferErrorEnum.swift; sourceTree = "<group>"; };
 		6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "yolov5s-original-ane.mlmodel"; sourceTree = "<group>"; };
 		652617A9264EEEF8006A45A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		6590F3282650789B0008A06F /* ThresholdProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdProvider.swift; sourceTree = "<group>"; };
 		65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeUnitEnum.swift; sourceTree = "<group>"; };
 		777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileObjectDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		777D6F60258A26A00020F5C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6590F327265078710008A06F /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				6590F3282650789B0008A06F /* ThresholdProvider.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		777D6F54258A26A00020F5C3 = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +139,7 @@
 				777D6F78258A2C760020F5C3 /* Base */,
 				9324E980258BDE5C007475FE /* Extensions */,
 				937B7F78258E30DE001979EF /* Enums */,
+				6590F327265078710008A06F /* Utilities */,
 				93F36305258F741B0090BE16 /* Model */,
 				93F5F655258D2BEB00A4B172 /* View */,
 				93F5F656258D2BF000A4B172 /* ViewModel */,
@@ -369,6 +380,7 @@
 				777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */,
 				93F362F8258F617A0090BE16 /* MLModelLoaderServiceProtocol.swift in Sources */,
 				777D6F63258A26A00020F5C3 /* SceneDelegate.swift in Sources */,
+				6590F3292650789B0008A06F /* ThresholdProvider.swift in Sources */,
 				93A96D18258F789C004E6964 /* MLModelSelectionViewController.swift in Sources */,
 				93F5F658258D2CCE00A4B172 /* SettingsViewController.swift in Sources */,
 				9381263A25927163003C31CB /* SettingsViewModel.swift in Sources */,
