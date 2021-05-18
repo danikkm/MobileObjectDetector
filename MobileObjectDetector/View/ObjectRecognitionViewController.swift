@@ -20,16 +20,17 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     private var detectionOverlay: CALayer! = nil
     private var blurView: UIView!
-    @IBOutlet weak private var previewView: UIView!
-    @IBOutlet weak private var actionButton: UIButton!
-    @IBOutlet weak private var settingsMenuButton: UIButton!
-    @IBOutlet weak var selectedModelLabel: UILabel!
-    @IBOutlet weak var computeUnitSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var zoomFactorButton: UIButton!
+    @IBOutlet private weak var previewView: UIView!
+    @IBOutlet private weak var actionButton: UIButton!
+    @IBOutlet private weak var settingsMenuButton: UIButton!
+    @IBOutlet private weak var selectedModelLabel: UILabel!
+    @IBOutlet private weak var inferenceLabel: UILabel!
+    @IBOutlet private weak var computeUnitSegmentedControl: UISegmentedControl!
+    @IBOutlet private weak var zoomFactorButton: UIButton!
     
     // MARK: - Properties
     private var detectionViewModel: DetectionViewModel!
-
+    
     // MARK: - Reactive Properties
     private var disposeBag = DisposeBag()
     
@@ -101,6 +102,7 @@ extension ObjectRecognitionViewController {
                 print("Object observation has no labels")
                 continue
             }
+            
             let objectBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(detectionViewModel.bufferSize.width), Int(detectionViewModel.bufferSize.height))
             
             let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
@@ -266,9 +268,9 @@ extension ObjectRecognitionViewController {
         computeUnitSegmentedControl.rx
             .selectedSegmentIndex
             .skip(1)
-            .bind(onNext: { [weak self] index in
+            .bind(onNext: { [unowned self] index in
                 let computeUnit = ComputeUnit(rawValue: index) ?? .ane
-                self?.detectionViewModel.setComputeUnit(to: computeUnit)
+                self.detectionViewModel.setComputeUnit(to: computeUnit)
             }).disposed(by: disposeBag)
         
         zoomFactorButton.rx.tap
@@ -285,11 +287,12 @@ extension ObjectRecognitionViewController {
                 case .active:
                     self.setupLayers()
                     self.updateLayerGeometry()
-                    
+                    self.inferenceLabel.isHidden.toggle()
                     DispatchQueue.global(qos: .userInitiated).async {
                         self.detectionViewModel.setupVision()
                     }
                 case .inactive:
+                    self.inferenceLabel.isHidden.toggle()
                     self.detectionViewModel.cleanup()
                     if self.detectionOverlay != nil {
                         self.detectionOverlay.removeFromSuperlayer()
@@ -297,10 +300,14 @@ extension ObjectRecognitionViewController {
                 }
             }).disposed(by: disposeBag)
         
+        detectionViewModel.inferenceTimeDriver
+            .drive(inferenceLabel.rx.text)
+            .disposed(by: disposeBag)
+        
         detectionViewModel.model.selectedModelDriver
-            .drive(onNext: { [weak self] mlModel in
-                self?.selectedModelLabel.text = mlModel.name
-            }).disposed(by: disposeBag)
+            .map({ $0.name })
+            .drive(selectedModelLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }
 

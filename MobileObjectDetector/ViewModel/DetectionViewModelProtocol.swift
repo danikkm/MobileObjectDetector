@@ -23,6 +23,7 @@ protocol DetectionViewModelProtocol: AnyObject {
     var detectionStateDriver: Driver<DetectionState> { get }
     var frameRateObservable: Observable<Double> { get }
     var cameraTypeObservable: Observable<CameraType> { get }
+    var inferenceTimeDriver: Driver<String> { get }
     
     func configure(delegate: DetectionViewModelEvents)
     func stopCaptureSession()

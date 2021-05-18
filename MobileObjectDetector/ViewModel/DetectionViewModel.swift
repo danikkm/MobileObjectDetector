@@ -21,6 +21,7 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     
     // MARK: - Private Properties
     private weak var delegate: DetectionViewModelEvents?
+    private var thresholdFeatureProvider: ExtendedMLFeatureProvider!
     private var requests = [VNRequest]()
     private (set) var session = AVCaptureSession()
     private (set) var bufferSize: CGSize = .zero
@@ -30,37 +31,44 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .inherit)
     private var videoDevice: AVCaptureDevice!
     
+    
     // MARK: - Private Reactive Properties
-    private (set) var frameRateRelay = PublishRelay<Double>()
+    private (set) var frameRateRelay = PublishRelay<Double>() // TODO: remove access outside of the view model
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
     private let detectionStateRelay = BehaviorRelay<DetectionState>(value: .inactive)
     private let computeUnitRelay = BehaviorRelay<ComputeUnit>(value: .ane)
     private let coreMLModel = PublishSubject<VNCoreMLModel>()
+    private let inferenceRelay = BehaviorRelay<String>(value: "")
+    
     
     // MARK: - Public Computed Properties
-    var cameraType: CameraType {
+    public var cameraType: CameraType {
         return cameraTypeRelay.value
     }
     
-    var detectionState: DetectionState {
+    public var detectionState: DetectionState {
         return detectionStateRelay.value
     }
     
-    var selectedModel: CoreMLModel {
+    public var selectedModel: CoreMLModel {
         return model.selectedModel
     }
     
     // MARK: - Public Reactive Computed Properties
-    var detectionStateDriver: Driver<DetectionState> {
+    public var detectionStateDriver: Driver<DetectionState> {
         return detectionStateRelay.asDriver(onErrorJustReturn: .inactive).debug()
     }
     
-    var frameRateObservable: Observable<Double> {
+    public var frameRateObservable: Observable<Double> {
         return frameRateRelay.asObservable().debug()
     }
     
-    var cameraTypeObservable: Observable<CameraType> {
+    public var cameraTypeObservable: Observable<CameraType> {
         return cameraTypeRelay.asObservable()
+    }
+    
+    public var inferenceTimeDriver: Driver<String> {
+        return inferenceRelay.asDriver()
     }
     
     // MARK: - Private Computed Properties
@@ -92,7 +100,10 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     
     private var visionModel: VNCoreMLModel {
         do {
-            return try VNCoreMLModel(for: mlModel)
+            let model =  try VNCoreMLModel(for: mlModel)
+            model.featureProvider = thresholdFeatureProvider
+            
+            return model
         } catch {
             fatalError("Failed to create VNCoreMLModel: \(error)")
         }
@@ -101,12 +112,13 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
 
 // MARK: - Public methods
 extension DetectionViewModel {
-    func configure(delegate: DetectionViewModelEvents) {
+    public func configure(delegate: DetectionViewModelEvents) {
         self.delegate = delegate
         self.capturePreset = .vga640x480
+        self.thresholdFeatureProvider = ThresholdProvider()
     }
     
-    func prepareAVCapture() {
+    public func prepareAVCapture() {
         addVideoInput(deviceType: .builtInDualWideCamera, position: .back)
         
         session.beginConfiguration()
@@ -143,9 +155,11 @@ extension DetectionViewModel {
         session.commitConfiguration()
     }
     
-    func setupVision() {
+    public func setupVision() {
         print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
-        visionModel.featureProvider = ThresholdProvider()
+        
+        thresholdFeatureProvider.setFeatureValue(for: .iouThreshold, to: 0.9)
+        visionModel.featureProvider? = thresholdFeatureProvider
         
         let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
             self?.detectionRequestHandler(request: request, error: error)
@@ -154,7 +168,7 @@ extension DetectionViewModel {
         requests = [objectRecognition]
     }
     
-    func switchCamera() {
+    public func switchCamera() {
         switch cameraType {
         case .frontFacing:
             cameraTypeRelay.accept(.backFacing)
@@ -176,7 +190,7 @@ extension DetectionViewModel {
         }
     }
     
-    func changeFrameRate(to frameRate: Double) {
+    public func changeFrameRate(to frameRate: Double) {
         switch cameraType {
         case .frontFacing:
             break
@@ -185,11 +199,11 @@ extension DetectionViewModel {
         }
     }
     
-    func startCaptureSession() {
+    public func startCaptureSession() {
         session.startRunning()
     }
     
-    func stopCaptureSession() {
+    public func stopCaptureSession() {
         session.stopRunning()
     }
 }
@@ -224,7 +238,7 @@ extension DetectionViewModel {
         }
     }
     
-    func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer) {
+    public func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
@@ -252,7 +266,8 @@ extension DetectionViewModel {
                 let startTime = CACurrentMediaTime()
                 try imageRequestHandler.perform(self.requests)
                 let endTime = CACurrentMediaTime()
-                print(String(format: "Inference (ms): %.3f", (endTime - startTime) * 1000))
+                
+                self.inferenceRelay.accept(String(format: "Inference (ms): %.1f", (endTime - startTime) * 1000))
             } catch {
                 self.delegate?.drawVisionRequestResults([])
                 print(error)

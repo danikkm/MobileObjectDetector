@@ -17,10 +17,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BsQ-wi-k9r">
-                                <rect key="frame" x="96" y="762" width="222" height="68"/>
+                                <rect key="frame" x="96" y="776" width="222" height="54"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="68" id="FWW-CO-0bL"/>
+                                    <constraint firstAttribute="height" constant="54" id="FWW-CO-0bL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="24"/>
                                 <state key="normal" title="Start Detecting">
@@ -28,7 +28,7 @@
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="32"/>
+                                        <integer key="value" value="18"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </button>
@@ -56,17 +56,23 @@
                                 </segments>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oAT-w8-m7J">
-                                <rect key="frame" x="186" y="702" width="42" height="42"/>
+                                <rect key="frame" x="186" y="716" width="42" height="42"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="42" id="QgI-3d-YMb"/>
-                                    <constraint firstAttribute="width" constant="42" id="XkQ-WD-Mab"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="XkQ-WD-Mab"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                 <state key="normal" title="1.0">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Inference (ms):" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AM1-q3-MmQ">
+                                <rect key="frame" x="149.5" y="143" width="115.5" height="20.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -78,6 +84,8 @@
                             <constraint firstItem="BsQ-wi-k9r" firstAttribute="top" secondItem="oAT-w8-m7J" secondAttribute="bottom" constant="18" id="HVo-fA-tja"/>
                             <constraint firstItem="pHJ-b2-Uyx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="RwP-GF-DJs" secondAttribute="trailing" constant="12" id="OJw-uN-f4S"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BsQ-wi-k9r" secondAttribute="trailing" constant="96" id="RaW-cU-ljY"/>
+                            <constraint firstItem="AM1-q3-MmQ" firstAttribute="top" secondItem="gMH-0z-YI6" secondAttribute="bottom" constant="16" id="UVS-YV-ibu"/>
+                            <constraint firstItem="AM1-q3-MmQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Vx0-RV-DhG"/>
                             <constraint firstItem="pHJ-b2-Uyx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ab1-q4-ZLj"/>
                             <constraint firstItem="gMH-0z-YI6" firstAttribute="top" secondItem="RwP-GF-DJs" secondAttribute="bottom" constant="8" id="gio-pp-aaX"/>
                             <constraint firstItem="gMH-0z-YI6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="65" id="hc7-C0-4Z8"/>
@@ -89,6 +97,7 @@
                     <connections>
                         <outlet property="actionButton" destination="BsQ-wi-k9r" id="LOi-Pu-XQz"/>
                         <outlet property="computeUnitSegmentedControl" destination="gMH-0z-YI6" id="raG-Wd-qgX"/>
+                        <outlet property="inferenceLabel" destination="AM1-q3-MmQ" id="WsW-MK-AA6"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="3SC-hN-o6K"/>
                         <outlet property="selectedModelLabel" destination="RwP-GF-DJs" id="40T-Ht-0Jc"/>
                         <outlet property="settingsMenuButton" destination="pHJ-b2-Uyx" id="fmf-za-7wI"/>

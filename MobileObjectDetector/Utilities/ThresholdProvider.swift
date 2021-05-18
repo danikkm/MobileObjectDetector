@@ -6,10 +6,11 @@
 //
 
 import CoreML
+import Vision
 
 /// - Tag: ThresholdProvider
 /// Class providing customized thresholds for object detection model
-class ThresholdProvider: MLFeatureProvider {
+class ThresholdProvider: ExtendedMLFeatureProvider {
     /// The actual values to provide as input
     ///
     /// Create ML Defaults are 0.45 for IOU and 0.25 for confidence.
@@ -20,18 +21,47 @@ class ThresholdProvider: MLFeatureProvider {
     /// The confidence threshold can also be relaxed slightly because
     /// objects look very consistent and are easily detected on a homogeneous
     /// background.
-    open var values = [
+    
+    var values = [
         "iouThreshold": MLFeatureValue(double: 0.3),
         "confidenceThreshold": MLFeatureValue(double: 0.2)
     ]
-
+    
     /// The feature names the provider has, per the MLFeatureProvider protocol
     var featureNames: Set<String> {
         return Set(values.keys)
     }
-
+    
     /// The actual values for the features the provider can provide
     func featureValue(for featureName: String) -> MLFeatureValue? {
         return values[featureName]
+    }
+    
+    func setFeatureValue(for feature: FeaturesName, to value: Double) {
+        switch feature {
+        case .iouThreshold:
+            values["iouThreshold"] = MLFeatureValue(double: value)
+        case .confidenceThreshold:
+            values["confidenceThreshold"] = MLFeatureValue(double: value)
+        }
+    }
+}
+
+protocol ExtendedMLFeatureProvider: MLFeatureProvider {
+    var values: [String : MLFeatureValue] { get set}
+    func setFeatureValue(for feature: FeaturesName, to value: Double)
+}
+
+enum FeaturesName: String, CustomStringConvertible {
+    case iouThreshold
+    case confidenceThreshold
+    
+    var description: String {
+        switch self {
+        case .iouThreshold:
+            return "iouThreshold"
+        case .confidenceThreshold:
+            return "confidenceThreshold"
+        }
     }
 }
