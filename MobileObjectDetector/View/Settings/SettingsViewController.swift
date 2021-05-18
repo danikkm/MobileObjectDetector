@@ -12,11 +12,11 @@ import RxSwift
 import RxDataSources
 import NotificationBannerSwift
 
+// TODO: refactor using using vanilla table view
 class SettingsViewController: QuickTableViewController {
     
-//    private var mlModelsViewModel: MLModelsViewModelProtocol!
     private var settingsViewModel: SettingsViewModelProtocol!
-    private var detectionViewModel: DetectionViewModel!
+    private var detectionViewModel: DetectionViewModelProtocol!
     
     let disposeBag = DisposeBag()
     
@@ -27,15 +27,14 @@ class SettingsViewController: QuickTableViewController {
         setupBindings()
     }
     
-    func prepare(detectionViewModel: DetectionViewModel) {
+    func prepare(detectionViewModel: DetectionViewModelProtocol) {
         self.detectionViewModel = detectionViewModel
-//        self.mlModelsViewModel = mlModelsViewModel
         self.settingsViewModel = SettingsViewModel()
     }
     
     private func setupMainUIElements() {
         tableContents = [
-            Section(title: "Camera settings", rows: [
+            Section(title: "Camera Settings", rows: [
                 SwitchRow<CustomSwitchCell>(text: "60 FPS", switchValue: settingsViewModel.frameRateSwitch, action: self.didToggleFrameRateSection())
             ]),
             Section(title: "Select Model", rows: [
@@ -43,7 +42,7 @@ class SettingsViewController: QuickTableViewController {
                     guard let self = self else { return }
                     
                     let mlModelSelectionVC = MLModelSelectionViewController()
-                    mlModelSelectionVC.prepare(viewModel: self.detectionViewModel)
+                    mlModelSelectionVC.prepare(viewModel: self.detectionViewModel.model)
                     self.navigationController?.pushViewController(mlModelSelectionVC, animated: true)
                 })
             ]),

@@ -16,6 +16,8 @@ class AppCoordinator {
     
     func start() {
         let modelsViewModel =  MLModelsViewModel()
+        modelsViewModel.configure()
+        
         let detectionViewModel = DetectionViewModel(model: modelsViewModel)
         let viewController = ObjectRecognitionViewController.instantiate(detectionViewModel: detectionViewModel)
         let navigationController = UINavigationController(rootViewController: viewController)

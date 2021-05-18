@@ -11,45 +11,50 @@ import RxCocoa
 
 final class MLModelsViewModel: MLModelsViewModelProtocol {
     
+    // MARK: - Private Properties
     private (set) var mlModelLoaderService: MLModelLoaderServiceProtocol!
-    private (set) var bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
-    private (set) var downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
-    private (set) var selectedModelRelay = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
     
-    private (set) var mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
-    
+    // MARK: - Private Reactive Properties
     private let disposeBag = DisposeBag()
+    private let bundledMlModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
+    private let downloadedModelsRelay = BehaviorRelay<[CoreMLModel]>(value: [])
+    private let selectedModelRelay = BehaviorRelay<CoreMLModel>(value: .init(url: nil, name: "", origin: .bundle))
+    private let mlModelsSubject = BehaviorRelay<[TableViewSection]>(value: [])
+    private (set) var dataSource = MLModelSelectionDataSource.dataSource()
     
-    var downloadedModelsObservable: Observable<[CoreMLModel]> {
+    // MARK: - Public Computed Properties
+    public var selectedModel: CoreMLModel {
+        return selectedModelRelay.value
+    }
+    
+    // MARK: - Public Reactive Computed Properties
+    public var downloadedModelsObservable: Observable<[CoreMLModel]> {
         return downloadedModelsRelay.asObservable()
     }
     
-    var bundledModelsObservable: Observable<[CoreMLModel]> {
+    public var bundledModelsObservable: Observable<[CoreMLModel]> {
         return bundledMlModelsRelay.asObservable()
     }
     
-    var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> {
+    public var mlModelsTableViewSectionObservable: Observable<[TableViewSection]> {
         return mlModelsSubject
             .asObservable()
             .observe(on: MainScheduler.instance)
     }
     
-    var combinedModelsObservable: Observable<[CoreMLModel]> {
+    public var combinedModelsObservable: Observable<[CoreMLModel]> {
         return mlModelsSubject.asObservable()
             .map({ $0.flatMap({ $0.items }) })
     }
     
-    var selectedModelDriver: Driver<CoreMLModel> {
+    public var selectedModelDriver: Driver<CoreMLModel> {
         return selectedModelRelay.asDriver(onErrorJustReturn: .init(url: nil, name: "", origin: .bundle))
     }
-    
-    var selectedModel: CoreMLModel {
-        return selectedModelRelay.value
-    }
-    
-    var dataSource = MLModelSelectionDataSource.dataSource()
-    
-    init() {
+}
+
+// MARK: - Public methods
+extension MLModelsViewModel {
+    public func configure() {
         self.mlModelLoaderService = MLModelLoaderService(mlModelsViewModel: self)
         mlModelLoaderService.loadAllModels(from: .bundle)
         mlModelLoaderService.loadAllModels(from: .downloaded)
@@ -57,16 +62,31 @@ final class MLModelsViewModel: MLModelsViewModelProtocol {
         setInitialMlModel()
     }
     
-    func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL? {
+    public func compileMLModel(at selectedFileURL: URL, originalName: String) -> URL? {
         return mlModelLoaderService.compileMLModel(at: selectedFileURL, originalName: originalName)
     }
     
-    func reloadAllMLModels() {
+    public func reloadAllMLModels() {
         downloadedModelsRelay.accept([])
         mlModelLoaderService.loadAllModels(from: .downloaded)
         mlModelsSubject.accept([])
         populateTableViewSection()
-        
+    }
+}
+
+// MARK: - Public Interface
+extension MLModelsViewModel {
+    public func setSelectedModel(to selectedModel: CoreMLModel) {
+        selectedModelRelay.accept(selectedModel)
+    }
+    
+    public func setModels(_ models: [CoreMLModel], to location: CoreMLModelLocation) {
+        switch location {
+        case .bundle:
+            bundledMlModelsRelay.accept(models)
+        case .downloaded:
+            downloadedModelsRelay.accept(models)
+        }
     }
 }
 

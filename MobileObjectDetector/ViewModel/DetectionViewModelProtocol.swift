@@ -11,6 +11,8 @@ import AVFoundation
 import Vision
 
 protocol DetectionViewModelProtocol: AnyObject {
+    
+    var model: MLModelsViewModelProtocol { get }
     var session: AVCaptureSession { get }
     var bufferSize: CGSize { get }
     

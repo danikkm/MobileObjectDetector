@@ -43,9 +43,9 @@ class MLModelLoaderService: MLModelLoaderServiceProtocol {
             
             switch location {
             case .bundle:
-                mlModelsViewModel.bundledMlModelsRelay.accept(coreMLModels)
+                mlModelsViewModel.setModels(coreMLModels, to: .bundle)
             case .downloaded:
-                mlModelsViewModel.downloadedModelsRelay.accept(coreMLModels)
+                mlModelsViewModel.setModels(coreMLModels, to: .downloaded)
             }
             
         } catch {
