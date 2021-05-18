@@ -11,19 +11,16 @@ import AVFoundation
 import Vision
 
 protocol DetectionViewModelProtocol: AnyObject {
-    
     var model: MLModelsViewModelProtocol { get }
     var session: AVCaptureSession { get }
     var bufferSize: CGSize { get }
-    
-    var frameRateRelay: PublishRelay<Double> { get }
     
     var cameraType: CameraType { get }
     var detectionState: DetectionState { get }
     var selectedModel: CoreMLModel { get }
     
+    var currentZoomFactorText: Driver<String> { get }
     var detectionStateDriver: Driver<DetectionState> { get }
-    var frameRateObservable: Observable<Double> { get }
     var cameraTypeObservable: Observable<CameraType> { get }
     var inferenceTimeDriver: Driver<String> { get }
     
@@ -34,10 +31,10 @@ protocol DetectionViewModelProtocol: AnyObject {
     func setupVision()
     func predictWithPixelBuffer(sampleBuffer: CMSampleBuffer)
     func switchCamera()
-    func changeFrameRate(to frameRate: Double)
     
     func setDetectionState(to state: DetectionState)
     func setComputeUnit(to computeUnit: ComputeUnit)
+    func setFrameRate(to frameRate: FrameRateMode)
     func changeZoomFactor()
     func cleanup()
 }

@@ -33,7 +33,7 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     
     
     // MARK: - Private Reactive Properties
-    private (set) var frameRateRelay = PublishRelay<Double>() // TODO: remove access outside of the view model
+    private let currentZoomFactorTextRelay = BehaviorRelay<String>(value: "1.0")
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
     private let detectionStateRelay = BehaviorRelay<DetectionState>(value: .inactive)
     private let computeUnitRelay = BehaviorRelay<ComputeUnit>(value: .ane)
@@ -55,12 +55,12 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     }
     
     // MARK: - Public Reactive Computed Properties
-    public var detectionStateDriver: Driver<DetectionState> {
-        return detectionStateRelay.asDriver(onErrorJustReturn: .inactive).debug()
+    public var currentZoomFactorText: Driver<String> {
+        return currentZoomFactorTextRelay.asDriver()
     }
     
-    public var frameRateObservable: Observable<Double> {
-        return frameRateRelay.asObservable().debug()
+    public var detectionStateDriver: Driver<DetectionState> {
+        return detectionStateRelay.asDriver(onErrorJustReturn: .inactive).debug()
     }
     
     public var cameraTypeObservable: Observable<CameraType> {
@@ -126,7 +126,7 @@ extension DetectionViewModel {
         
         if session.canAddOutput(videoDataOutput) {
             session.addOutput(videoDataOutput)
-            // Add a video data output
+            
             videoDataOutput.alwaysDiscardsLateVideoFrames = true
             videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
             videoDataOutput.setSampleBufferDelegate(delegate as? ObjectRecognitionViewController, queue: videoDataOutputQueue)
@@ -190,15 +190,6 @@ extension DetectionViewModel {
         }
     }
     
-    public func changeFrameRate(to frameRate: Double) {
-        switch cameraType {
-        case .frontFacing:
-            break
-        case .backFacing:
-            videoDevice.set(frameRate: frameRate)
-        }
-    }
-    
     public func startCaptureSession() {
         session.startRunning()
     }
@@ -218,14 +209,25 @@ extension DetectionViewModel {
         computeUnitRelay.accept(computeUnit)
     }
     
+    public func setFrameRate(to frameRate: FrameRateMode) {
+        switch cameraType {
+        case .frontFacing:
+            break
+        case .backFacing:
+            videoDevice.set(frameRate: frameRate == .normal ? 30 : 60)
+        }
+    }
+    
     public func changeZoomFactor() {
         var zoomFactor: CGFloat = 1.0
         
         switch videoDevice.deviceType {
         case .builtInDualWideCamera where videoDevice.videoZoomFactor == 1.0:
             zoomFactor = 2.0
+            currentZoomFactorTextRelay.accept("0.5")
         case .builtInDualWideCamera where videoDevice.videoZoomFactor == 2.0:
             zoomFactor = 1.0
+            currentZoomFactorTextRelay.accept("1.0")
         default:
             break
         }

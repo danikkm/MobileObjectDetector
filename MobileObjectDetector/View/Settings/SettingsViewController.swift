@@ -61,7 +61,8 @@ class SettingsViewController: QuickTableViewController {
         ]
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView,
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         (cell as? CustomSwitchCell)?.configure(isSwitchControlEnabled: self.settingsViewModel.isFrameRateToggleEnabled)
         return cell
@@ -76,10 +77,21 @@ class SettingsViewController: QuickTableViewController {
     }
     
     private func setupBindings() {
-        detectionViewModel.frameRateObservable
+        detectionViewModel.cameraTypeObservable
+            .subscribe(onNext: { [weak self] cameraType in
+                switch cameraType {
+                case .frontFacing:
+                    self?.settingsViewModel.setIsFrameRateToggleEnabled(to: false)
+                case .backFacing:
+                    self?.settingsViewModel.setIsFrameRateToggleEnabled(to: true)
+                }
+            }).disposed(by: disposeBag)
+        
+        //TODO: fix logic
+        settingsViewModel.frameRateObservable
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] frameRate in
-                self?.detectionViewModel.changeFrameRate(to: frameRate)
+                self?.detectionViewModel.setFrameRate(to: frameRate)
             }).disposed(by: disposeBag)
     }
 }
@@ -89,13 +101,8 @@ extension SettingsViewController {
     private func didToggleFrameRateSection() -> (Row) -> Void {
         return { [weak self] row in
             if let toggle = row as? SwitchRow<CustomSwitchCell> {
-                if toggle.switchValue == true {
-                    self?.detectionViewModel.frameRateRelay.accept(60.0)
-                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
-                } else {
-                    self?.detectionViewModel.frameRateRelay.accept(30.0)
-                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
-                }
+                toggle.switchValue == true ? self?.settingsViewModel.setFrameRate(to: .smooth) :
+                    self?.settingsViewModel.setFrameRate(to: .normal)
             }
         }
     }

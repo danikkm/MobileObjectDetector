@@ -9,8 +9,11 @@ import RxSwift
 import RxCocoa
 
 protocol SettingsViewModelProtocol {
-    var frameRateSwitchRelay: BehaviorRelay<FrameRateMode> { get }
-    var isFrameRateToggleEnabledRelay: BehaviorRelay<Bool> { get }
     var frameRateSwitch: Bool { get }
     var isFrameRateToggleEnabled: Bool { get }
+    
+    var frameRateObservable: Observable<FrameRateMode> { get }
+    
+    func setFrameRate(to frameRate: FrameRateMode)
+    func setIsFrameRateToggleEnabled(to value: Bool)
 }

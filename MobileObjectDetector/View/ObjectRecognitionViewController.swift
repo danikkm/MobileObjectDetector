@@ -205,7 +205,7 @@ extension ObjectRecognitionViewController {
 extension ObjectRecognitionViewController {
     func setupBindings() {
         view.rx.tapGesture() { gesture, _ in
-            gesture.numberOfTapsRequired = 2
+            gesture.numberOfTapsRequired = 3
         }
         .when(.recognized)
         .subscribe(onNext: { [weak self] _ in
@@ -248,22 +248,9 @@ extension ObjectRecognitionViewController {
                 
                 settingsVC.rx.deallocating.bind { _ in
                     self.detectionViewModel.startCaptureSession()
-                    
                 }.disposed(by: self.disposeBag)
                 
             }.disposed(by: disposeBag)
-        
-        //        detectionViewModel.cameraTypeObservable
-        //            .subscribe(onNext: { [weak self] type in
-        //                switch type {
-        //                case .backFacing:
-        //                    self?.settingsViewModel.frameRateSwitchRelay.accept(.smooth)
-        //                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(true)
-        //                case .frontFacing:
-        //                    self?.settingsViewModel.frameRateSwitchRelay.accept(.normal)
-        //                    self?.settingsViewModel.isFrameRateToggleEnabledRelay.accept(false)
-        //                }
-        //            }).disposed(by: disposeBag)
         
         computeUnitSegmentedControl.rx
             .selectedSegmentIndex
@@ -277,6 +264,10 @@ extension ObjectRecognitionViewController {
             .bind(onNext: { [unowned self] _ in
                 self.detectionViewModel.changeZoomFactor()
             }).disposed(by: disposeBag)
+        
+        detectionViewModel.currentZoomFactorText
+            .drive(zoomFactorButton.rx.title())
+            .disposed(by: disposeBag)
         
         detectionViewModel.detectionStateDriver
             .distinctUntilChanged()
