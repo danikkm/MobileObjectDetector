@@ -249,6 +249,7 @@ extension ObjectRecognitionViewController {
                 self.detectionViewModel.stopCaptureSession()
                 
                 let settingsVC = SettingsViewController()
+                
                 settingsVC.prepare(detectionViewModel: detectionViewModel)
                 self.navigationController?.pushViewController(settingsVC, animated: true)
                 
@@ -275,22 +276,28 @@ extension ObjectRecognitionViewController {
             .drive(zoomFactorButton.rx.title())
             .disposed(by: disposeBag)
         
-        // TODO: make only available after model is loaded
-        iouStepper.rx.value
-            .skip(1)
-            .observe(on: MainScheduler.asyncInstance)
+        iouStepper.rx
+            .controlEvent([.touchDown])
+            .withLatestFrom(iouStepper.rx.value)
             .subscribe(onNext: { [unowned self] value in
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+                
                 self.detectionViewModel.setIouThreshold(to: value.round(places: 2))
                 self.iouLabel.rx.text.onNext("IoU: \(value.round(places: 2))")
+                
             }).disposed(by: disposeBag)
-        
-        // TODO: make only available after model is loaded
-        confidenceStepper.rx.value
-            .skip(1)
-            .observe(on: MainScheduler.asyncInstance)
+                
+        confidenceStepper.rx
+            .controlEvent([.touchDown])
+            .withLatestFrom(iouStepper.rx.value)
             .subscribe(onNext: { [unowned self] value in
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+                
                 self.detectionViewModel.setConfidenceThreshold(to: value.round(places: 2))
                 self.confidenceLabel.rx.text.onNext("Confidence: \(value.round(places: 2))")
+                
             }).disposed(by: disposeBag)
         
         detectionViewModel.detectionStateDriver
@@ -302,13 +309,23 @@ extension ObjectRecognitionViewController {
                 case .active:
                     self.setupLayers()
                     self.updateLayerGeometry()
-                    UIView.transition(with: self.detectionStackView, duration: 0.4,
-                                      options: .transitionCrossDissolve,
-                                      animations: {
-                                        self.detectionStackView.isHidden.toggle()
-                                      })
+                    
+                    let dispatchGroup = DispatchGroup()
+                    
+                    dispatchGroup.enter()
                     DispatchQueue.global(qos: .userInitiated).async {
                         self.detectionViewModel.setupVision()
+                        dispatchGroup.leave()
+                    }
+                    
+                    dispatchGroup.notify(queue: .main) { [weak self] in
+                        guard let self = self else { return }
+                        
+                        UIView.transition(with: self.detectionStackView, duration: 0.4,
+                                          options: .transitionCrossDissolve,
+                                          animations: {
+                                            self.detectionStackView.isHidden.toggle()
+                                          })
                     }
                 case .inactive:
                     UIView.transition(with: self.detectionStackView, duration: 0.4,
@@ -316,7 +333,9 @@ extension ObjectRecognitionViewController {
                                       animations: {
                                         self.detectionStackView.isHidden.toggle()
                                       })
+                    
                     self.detectionViewModel.cleanup()
+                    
                     if self.detectionOverlay != nil {
                         self.detectionOverlay.removeFromSuperlayer()
                     }

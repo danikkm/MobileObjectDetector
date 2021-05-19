@@ -23,8 +23,8 @@ class ThresholdProvider: ExtendedMLFeatureProvider {
     /// background.
     
     var values = [
-        "iouThreshold": MLFeatureValue(double: 0.3),
-        "confidenceThreshold": MLFeatureValue(double: 0.2)
+        "iouThreshold": MLFeatureValue(double: 0.6),
+        "confidenceThreshold": MLFeatureValue(double: 0.4)
     ]
     
     /// The feature names the provider has, per the MLFeatureProvider protocol
