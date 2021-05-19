@@ -27,6 +27,12 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     @IBOutlet private weak var inferenceLabel: UILabel!
     @IBOutlet private weak var computeUnitSegmentedControl: UISegmentedControl!
     @IBOutlet private weak var zoomFactorButton: UIButton!
+    @IBOutlet private weak var iouLabel: UILabel!
+    @IBOutlet private weak var iouStepper: UIStepper!
+    @IBOutlet private weak var confidenceLabel: UILabel!
+    @IBOutlet private weak var confidenceStepper: UIStepper!
+    @IBOutlet private weak var detectionStackView: UIStackView!
+    
     
     // MARK: - Properties
     private var detectionViewModel: DetectionViewModel!
@@ -269,6 +275,24 @@ extension ObjectRecognitionViewController {
             .drive(zoomFactorButton.rx.title())
             .disposed(by: disposeBag)
         
+        // TODO: make only available after model is loaded
+        iouStepper.rx.value
+            .skip(1)
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { [unowned self] value in
+                self.detectionViewModel.setIouThreshold(to: value.round(places: 2))
+                self.iouLabel.rx.text.onNext("IoU: \(value.round(places: 2))")
+            }).disposed(by: disposeBag)
+        
+        // TODO: make only available after model is loaded
+        confidenceStepper.rx.value
+            .skip(1)
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { [unowned self] value in
+                self.detectionViewModel.setConfidenceThreshold(to: value.round(places: 2))
+                self.confidenceLabel.rx.text.onNext("Confidence: \(value.round(places: 2))")
+            }).disposed(by: disposeBag)
+        
         detectionViewModel.detectionStateDriver
             .distinctUntilChanged()
             .drive(onNext: { [weak self] state in
@@ -278,12 +302,20 @@ extension ObjectRecognitionViewController {
                 case .active:
                     self.setupLayers()
                     self.updateLayerGeometry()
-                    self.inferenceLabel.isHidden.toggle()
+                    UIView.transition(with: self.detectionStackView, duration: 0.4,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                        self.detectionStackView.isHidden.toggle()
+                                      })
                     DispatchQueue.global(qos: .userInitiated).async {
                         self.detectionViewModel.setupVision()
                     }
                 case .inactive:
-                    self.inferenceLabel.isHidden.toggle()
+                    UIView.transition(with: self.detectionStackView, duration: 0.4,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                        self.detectionStackView.isHidden.toggle()
+                                      })
                     self.detectionViewModel.cleanup()
                     if self.detectionOverlay != nil {
                         self.detectionOverlay.removeFromSuperlayer()

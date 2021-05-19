@@ -35,6 +35,8 @@ protocol DetectionViewModelProtocol: AnyObject {
     func setDetectionState(to state: DetectionState)
     func setComputeUnit(to computeUnit: ComputeUnit)
     func setFrameRate(to frameRate: FrameRateMode)
+    func setIouThreshold(to iou: Double)
+    func setConfidenceThreshold(to confidence: Double)
     func changeZoomFactor()
     func cleanup()
 }

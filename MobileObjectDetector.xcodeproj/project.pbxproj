@@ -11,6 +11,7 @@
 		6511B13A264C456100E09536 /* CVPixelBufferErrorEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */; };
 		6511B13F264D9A1700E09536 /* yolov5s-original-ane.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */; };
 		652617AA264EEEF8006A45A1 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652617A9264EEEF8006A45A1 /* BaseViewModel.swift */; };
+		6586F5CA26552D6200F4689E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6586F5C926552D6200F4689E /* Double+Extension.swift */; };
 		6590F3292650789B0008A06F /* ThresholdProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6590F3282650789B0008A06F /* ThresholdProvider.swift */; };
 		65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */; };
 		777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F60258A26A00020F5C3 /* AppDelegate.swift */; };
@@ -56,6 +57,7 @@
 		6511B139264C456100E09536 /* CVPixelBufferErrorEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVPixelBufferErrorEnum.swift; sourceTree = "<group>"; };
 		6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "yolov5s-original-ane.mlmodel"; sourceTree = "<group>"; };
 		652617A9264EEEF8006A45A1 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		6586F5C926552D6200F4689E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		6590F3282650789B0008A06F /* ThresholdProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdProvider.swift; sourceTree = "<group>"; };
 		65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeUnitEnum.swift; sourceTree = "<group>"; };
 		777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileObjectDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +181,7 @@
 				93D1C211258FBB7B00B8B795 /* Collection+Extension.swift */,
 				93D1C2142590054A00B8B795 /* AVFoundation+Extension.swift */,
 				6511B137264C446900E09536 /* CVPixelBuffer+Extension.swift */,
+				6586F5C926552D6200F4689E /* Double+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				93D1C212258FBB7B00B8B795 /* Collection+Extension.swift in Sources */,
 				9330492E258A82CC00AC3C91 /* DetectionViewModel.swift in Sources */,
 				6511B138264C446900E09536 /* CVPixelBuffer+Extension.swift in Sources */,
+				6586F5CA26552D6200F4689E /* Double+Extension.swift in Sources */,
 				93A96D1C258F8229004E6964 /* MLModelSelectionDataSource.swift in Sources */,
 				931909C4258EB7000064DE93 /* MLModelsViewModel.swift in Sources */,
 				9381264425928235003C31CB /* CustomSwitchCell.swift in Sources */,

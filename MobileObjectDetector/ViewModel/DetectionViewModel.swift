@@ -158,9 +158,6 @@ extension DetectionViewModel {
     public func setupVision() {
         print("Using: \(selectedModel.name), running on \(mlModelConfig.computeUnits.rawValue)")
         
-        thresholdFeatureProvider.setFeatureValue(for: .iouThreshold, to: 0.9)
-        visionModel.featureProvider? = thresholdFeatureProvider
-        
         let objectRecognition = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
             self?.detectionRequestHandler(request: request, error: error)
         }
@@ -216,6 +213,16 @@ extension DetectionViewModel {
         case .backFacing:
             videoDevice.set(frameRate: frameRate == .normal ? 30 : 60)
         }
+    }
+    
+    public func setIouThreshold(to iou: Double) {
+        thresholdFeatureProvider.setFeatureValue(for: .iouThreshold, to: iou)
+        visionModel.featureProvider? = thresholdFeatureProvider
+    }
+    
+    public func setConfidenceThreshold(to confidence: Double) {
+        thresholdFeatureProvider.setFeatureValue(for: .confidenceThreshold, to: confidence)
+        visionModel.featureProvider? = thresholdFeatureProvider
     }
     
     public func changeZoomFactor() {
