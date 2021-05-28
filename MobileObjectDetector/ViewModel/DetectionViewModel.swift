@@ -33,12 +33,15 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     
     
     // MARK: - Private Reactive Properties
-    private let currentZoomFactorTextRelay = BehaviorRelay<String>(value: "1.0")
+    private var disposeBag = DisposeBag()
+    private let currentZoomFactorTextRelay = BehaviorRelay<String>(value: "0.5")
     private let cameraTypeRelay = BehaviorRelay<CameraType>(value: .backFacing)
     private let detectionStateRelay = BehaviorRelay<DetectionState>(value: .inactive)
     private let computeUnitRelay = BehaviorRelay<ComputeUnit>(value: .ane)
     private let coreMLModel = PublishSubject<VNCoreMLModel>()
     private let inferenceRelay = BehaviorRelay<String>(value: "")
+    private let iouThresholdRelay = PublishSubject<String>()
+    private let confidenceThresholdRelay = PublishSubject<String>()
     
     
     // MARK: - Public Computed Properties
@@ -69,6 +72,14 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     
     public var inferenceTimeDriver: Driver<String> {
         return inferenceRelay.asDriver()
+    }
+    
+    public var iouThresholdDriver: Driver<String> {
+        return iouThresholdRelay.asDriver(onErrorJustReturn: "Error")
+    }
+    
+    public var confidenceThresholdDriver: Driver<String> {
+        return confidenceThresholdRelay.asDriver(onErrorJustReturn: "Error")
     }
     
     // MARK: - Private Computed Properties
@@ -216,13 +227,29 @@ extension DetectionViewModel {
     }
     
     public func setIouThreshold(to iou: Double) {
-        thresholdFeatureProvider.setFeatureValue(for: .iouThreshold, to: iou)
-        visionModel.featureProvider? = thresholdFeatureProvider
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            self.thresholdFeatureProvider.setFeatureValue(for: .iouThreshold, to: iou)
+            self.visionModel.featureProvider? = self.thresholdFeatureProvider
+            
+            if let iouThreshold = self.visionModel.featureProvider?.featureValue(for: "iouThreshold")?.doubleValue {
+                self.iouThresholdRelay.onNext(String("IoU: \(iouThreshold.round(places: 2))"))
+            }
+        }
     }
     
     public func setConfidenceThreshold(to confidence: Double) {
-        thresholdFeatureProvider.setFeatureValue(for: .confidenceThreshold, to: confidence)
-        visionModel.featureProvider? = thresholdFeatureProvider
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            self.thresholdFeatureProvider.setFeatureValue(for: .confidenceThreshold, to: confidence)
+            self.visionModel.featureProvider? = self.thresholdFeatureProvider
+            
+            if let confidenceThreshold = self.visionModel.featureProvider?.featureValue(for: "confidenceThreshold")?.doubleValue {
+                self.confidenceThresholdRelay.onNext(String("Confidence: \(confidenceThreshold.round(places: 2))"))
+            }
+        }
     }
     
     public func changeZoomFactor() {
@@ -231,10 +258,10 @@ extension DetectionViewModel {
         switch videoDevice.deviceType {
         case .builtInDualWideCamera where videoDevice.videoZoomFactor == 1.0:
             zoomFactor = 2.0
-            currentZoomFactorTextRelay.accept("0.5")
+            currentZoomFactorTextRelay.accept("1.0")
         case .builtInDualWideCamera where videoDevice.videoZoomFactor == 2.0:
             zoomFactor = 1.0
-            currentZoomFactorTextRelay.accept("1.0")
+            currentZoomFactorTextRelay.accept("0.5")
         default:
             break
         }

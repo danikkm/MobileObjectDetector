@@ -63,7 +63,7 @@
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="XkQ-WD-Mab"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
-                                <state key="normal" title="1.0">
+                                <state key="normal" title="0.5">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>

@@ -31,13 +31,15 @@ class ThresholdProvider: ExtendedMLFeatureProvider {
     var featureNames: Set<String> {
         return Set(values.keys)
     }
-    
+}
+
+extension ThresholdProvider {
     /// The actual values for the features the provider can provide
-    func featureValue(for featureName: String) -> MLFeatureValue? {
+    public func featureValue(for featureName: String) -> MLFeatureValue? {
         return values[featureName]
     }
     
-    func setFeatureValue(for feature: FeaturesName, to value: Double) {
+    public func setFeatureValue(for feature: FeaturesName, to value: Double) {
         switch feature {
         case .iouThreshold:
             values["iouThreshold"] = MLFeatureValue(double: value)
@@ -48,7 +50,8 @@ class ThresholdProvider: ExtendedMLFeatureProvider {
 }
 
 protocol ExtendedMLFeatureProvider: MLFeatureProvider {
-    var values: [String : MLFeatureValue] { get set}
+    var values: [String : MLFeatureValue] { get }
+    
     func setFeatureValue(for feature: FeaturesName, to value: Double)
 }
 

@@ -34,10 +34,10 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     @IBOutlet private weak var detectionStackView: UIStackView!
     
     
-    // MARK: - Properties
+    // MARK: - Private Properties
     private var detectionViewModel: DetectionViewModel!
     
-    // MARK: - Reactive Properties
+    // MARK: - Private Reactive Properties
     private var disposeBag = DisposeBag()
     
     // MARK: - Lifecycle Methods
@@ -276,28 +276,20 @@ extension ObjectRecognitionViewController {
             .drive(zoomFactorButton.rx.title())
             .disposed(by: disposeBag)
         
-        iouStepper.rx
-            .controlEvent([.touchDown])
-            .withLatestFrom(iouStepper.rx.value)
+        iouStepper.rx.value
+            .skip(1)
             .subscribe(onNext: { [unowned self] value in
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
-                
                 self.detectionViewModel.setIouThreshold(to: value.round(places: 2))
-                self.iouLabel.rx.text.onNext("IoU: \(value.round(places: 2))")
-                
-            }).disposed(by: disposeBag)
-                
-        confidenceStepper.rx
-            .controlEvent([.touchDown])
-            .withLatestFrom(iouStepper.rx.value)
-            .subscribe(onNext: { [unowned self] value in
                 let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.impactOccurred()
-                
+            }).disposed(by: disposeBag)
+        
+        confidenceStepper.rx.value
+            .skip(1)
+            .subscribe(onNext: { [unowned self] value in
                 self.detectionViewModel.setConfidenceThreshold(to: value.round(places: 2))
-                self.confidenceLabel.rx.text.onNext("Confidence: \(value.round(places: 2))")
-                
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
             }).disposed(by: disposeBag)
         
         detectionViewModel.detectionStateDriver
@@ -344,6 +336,14 @@ extension ObjectRecognitionViewController {
         
         detectionViewModel.inferenceTimeDriver
             .drive(inferenceLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        detectionViewModel.iouThresholdDriver
+            .drive(iouLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        detectionViewModel.confidenceThresholdDriver
+            .drive(confidenceLabel.rx.text)
             .disposed(by: disposeBag)
         
         detectionViewModel.model.selectedModelDriver
