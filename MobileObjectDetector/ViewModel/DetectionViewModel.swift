@@ -28,7 +28,10 @@ final class DetectionViewModel: BaseViewModel<MLModelsViewModelProtocol>,
     private var deviceInput: AVCaptureDeviceInput!
     private var capturePreset: AVCaptureSession.Preset! = nil
     private let videoDataOutput = AVCaptureVideoDataOutput()
-    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .inherit)
+    private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput",
+                                                     qos: .userInitiated,
+                                                     attributes: [],
+                                                     autoreleaseFrequency: .inherit)
     private var videoDevice: AVCaptureDevice!
     
     

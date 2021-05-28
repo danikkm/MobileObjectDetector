@@ -20,19 +20,20 @@ class ObjectRecognitionViewController: UIViewController, DetectionViewModelEvent
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     private var detectionOverlay: CALayer! = nil
     private var blurView: UIView!
+    
     @IBOutlet private weak var previewView: UIView!
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var settingsMenuButton: UIButton!
+    @IBOutlet private weak var zoomFactorButton: UIButton!
+    @IBOutlet private weak var cameraOrientationButton: UIButton!
     @IBOutlet private weak var selectedModelLabel: UILabel!
     @IBOutlet private weak var inferenceLabel: UILabel!
     @IBOutlet private weak var computeUnitSegmentedControl: UISegmentedControl!
-    @IBOutlet private weak var zoomFactorButton: UIButton!
     @IBOutlet private weak var iouLabel: UILabel!
     @IBOutlet private weak var iouStepper: UIStepper!
     @IBOutlet private weak var confidenceLabel: UILabel!
     @IBOutlet private weak var confidenceStepper: UIStepper!
     @IBOutlet private weak var detectionStackView: UIStackView!
-    
     
     // MARK: - Private Properties
     private var detectionViewModel: DetectionViewModel!
@@ -210,17 +211,6 @@ extension ObjectRecognitionViewController {
 // MARK: - Binding
 extension ObjectRecognitionViewController {
     func setupBindings() {
-        view.rx.tapGesture() { gesture, _ in
-            gesture.numberOfTapsRequired = 3
-        }
-        .when(.recognized)
-        .subscribe(onNext: { [weak self] _ in
-            self?.detectionViewModel.switchCamera()
-            self?.zoomFactorButton.isEnabled.toggle()
-            self?.zoomFactorButton.isEnabled == false ? ( self?.zoomFactorButton.alpha = 0.5) :  (self?.zoomFactorButton.alpha = 1.0)
-        })
-        .disposed(by: disposeBag)
-        
         actionButton.rx.tap
             .bind { [unowned self] _ in
                 self.actionButton.isSelected.toggle()
@@ -230,12 +220,12 @@ extension ObjectRecognitionViewController {
                 if isSelected {
                     self.actionButton.tintColor = .clear
                     self.actionButton.setTitleColor(.black, for: .selected)
-                    self.actionButton.rx.title(for: .selected).onNext("Stop Detecting")
+                    self.actionButton.rx.title(for: .selected).onNext("Stop")
                     self.actionButton.backgroundColor = UIColor.Button.stop
                     self.detectionViewModel.setDetectionState(to: .active)
                     self.computeUnitSegmentedControl.isEnabled.toggle()
                 } else {
-                    self.actionButton.rx.title(for: .normal).onNext("Start Detecting")
+                    self.actionButton.rx.title(for: .normal).onNext("Start")
                     self.actionButton.backgroundColor = UIColor.Button.start
                     self.detectionViewModel.setDetectionState(to: .inactive)
                     self.computeUnitSegmentedControl.isEnabled.toggle()
@@ -257,6 +247,13 @@ extension ObjectRecognitionViewController {
                     self.detectionViewModel.startCaptureSession()
                 }.disposed(by: self.disposeBag)
                 
+            }.disposed(by: disposeBag)
+        
+        cameraOrientationButton.rx.tap
+            .bind { [unowned self] _ in
+                self.detectionViewModel.switchCamera()
+                self.zoomFactorButton.isEnabled.toggle()
+                self.zoomFactorButton.isEnabled == false ? ( self.zoomFactorButton.alpha = 0.5) : (self.zoomFactorButton.alpha = 1.0)
             }.disposed(by: disposeBag)
         
         computeUnitSegmentedControl.rx
