@@ -14,8 +14,6 @@
 		6586F5CA26552D6200F4689E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6586F5C926552D6200F4689E /* Double+Extension.swift */; };
 		6590F3292650789B0008A06F /* ThresholdProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6590F3282650789B0008A06F /* ThresholdProvider.swift */; };
 		65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */; };
-		65F1B467265599AC008DC824 /* yolov5x_int8.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 65F1B463265599AA008DC824 /* yolov5x_int8.mlmodel */; };
-		65F1B468265599AC008DC824 /* yolov5l_int8.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 65F1B464265599AB008DC824 /* yolov5l_int8.mlmodel */; };
 		65F1B469265599AC008DC824 /* yolov5m_int8.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 65F1B465265599AB008DC824 /* yolov5m_int8.mlmodel */; };
 		65F1B46A265599AC008DC824 /* yolov5s_int8.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 65F1B466265599AC008DC824 /* yolov5s_int8.mlmodel */; };
 		777D6F61258A26A00020F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777D6F60258A26A00020F5C3 /* AppDelegate.swift */; };
@@ -64,8 +62,6 @@
 		6586F5C926552D6200F4689E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		6590F3282650789B0008A06F /* ThresholdProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdProvider.swift; sourceTree = "<group>"; };
 		65EEB3D6264EA88B0026155E /* ComputeUnitEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeUnitEnum.swift; sourceTree = "<group>"; };
-		65F1B463265599AA008DC824 /* yolov5x_int8.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = yolov5x_int8.mlmodel; sourceTree = "<group>"; };
-		65F1B464265599AB008DC824 /* yolov5l_int8.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = yolov5l_int8.mlmodel; sourceTree = "<group>"; };
 		65F1B465265599AB008DC824 /* yolov5m_int8.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = yolov5m_int8.mlmodel; sourceTree = "<group>"; };
 		65F1B466265599AC008DC824 /* yolov5s_int8.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = yolov5s_int8.mlmodel; sourceTree = "<group>"; };
 		777D6F5D258A26A00020F5C3 /* MobileObjectDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileObjectDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -234,10 +230,8 @@
 		93F362FA258F639B0090BE16 /* MLModels */ = {
 			isa = PBXGroup;
 			children = (
-				65F1B464265599AB008DC824 /* yolov5l_int8.mlmodel */,
 				65F1B465265599AB008DC824 /* yolov5m_int8.mlmodel */,
 				65F1B466265599AC008DC824 /* yolov5s_int8.mlmodel */,
-				65F1B463265599AA008DC824 /* yolov5x_int8.mlmodel */,
 				6511B13E264D9A1700E09536 /* yolov5s-original-ane.mlmodel */,
 				9357407325975E6F00910D49 /* YOLOv3Int8LUT.mlmodel */,
 			);
@@ -370,11 +364,9 @@
 			files = (
 				931909C7258EB7340064DE93 /* MLModelsViewModelProtocol.swift in Sources */,
 				65EEB3D7264EA88B0026155E /* ComputeUnitEnum.swift in Sources */,
-				65F1B468265599AC008DC824 /* yolov5l_int8.mlmodel in Sources */,
 				9324E982258BDE68007475FE /* Color+Palette.swift in Sources */,
 				938126402592776B003C31CB /* CameraModuleEnum.swift in Sources */,
 				777D6F7B258A2F110020F5C3 /* ObjectRecognitionViewController.swift in Sources */,
-				65F1B467265599AC008DC824 /* yolov5x_int8.mlmodel in Sources */,
 				65F1B469265599AC008DC824 /* yolov5m_int8.mlmodel in Sources */,
 				6511B13F264D9A1700E09536 /* yolov5s-original-ane.mlmodel in Sources */,
 				93F3630C258F744E0090BE16 /* CoreMLModel.swift in Sources */,
