@@ -356,10 +356,23 @@ extension ObjectRecognitionViewController {
 //MARK: - Private methods
 extension ObjectRecognitionViewController {
     private func checkForCameraAccess() {
-        if AVCaptureDevice.authorizationStatus(for: .video) ==  .authorized {
-            return
-        } else {
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            requestCameraPermission()
+        case .restricted, .denied:
             presentCameraAccessAlert()
+        case .authorized:
+            return
+        @unknown default:
+            fatalError("Unexpected behaviour detected")
+        }
+    }
+    
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { accessGranted in
+            guard accessGranted == true else { return }
         }
     }
     
