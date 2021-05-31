@@ -87,9 +87,7 @@ class SettingsViewController: QuickTableViewController {
                 }
             }).disposed(by: disposeBag)
         
-        //TODO: fix logic
         settingsViewModel.frameRateObservable
-            .distinctUntilChanged()
             .subscribe(onNext: { [weak self] frameRate in
                 self?.detectionViewModel.setFrameRate(to: frameRate)
             }).disposed(by: disposeBag)
